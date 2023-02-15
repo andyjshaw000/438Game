@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/andyjshaw000/438Game#readme",
   "dependencies": {
-    "three": "^0.149.0"
+    "p5": "^1.5.0",
+    "p5.play": "^3.5.20"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
