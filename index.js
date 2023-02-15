@@ -17,6 +17,7 @@ let BULLETDAMAGE;
 let PLAYERMAXHEALTH;
 let rotators;
 let rotatorson;
+// let rotatorct;
 let bouncer;
 let bounceron;
 let BOUNCESPEED;
@@ -88,6 +89,7 @@ function resetstats() {
   PLAYERSPEED = 6;
   BULLETDAMAGE = 180;
   rotatorson = false;
+  // rotatorct = 0;
   bounceron = false;
   xdirection = 1;
   ydirection = 1;
@@ -97,7 +99,7 @@ function resetstats() {
 
 function timecounter() {
   // setInterval(function() {
-  //   time++;
+  //   time += 1;
   // }, 1000);
   time = 601;
 }
@@ -164,7 +166,7 @@ function checklevel() {
   }
   if (experiencepoints % 50 === 0 && experiencepoints < 268 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
     noLoop();
-    experiencepoints++;
+    experiencepoints += 1;
     generateleveloptions();
   }
 }
@@ -180,10 +182,15 @@ function generateleveloptions() {
     PLAYERSPEED += 1;
     BULLETDAMAGE *= 10
     // ^should upgrade gun
-    new rotators.Sprite();
-    new rotators.Sprite();
+    // rotatorct += 1;
     rotatorson = true;
+    // for (let i = 0; i < rotators.length; i++) {
+    //   rotators[i].remove();
+    // }
+    // for (let i = 0; i < rotatorct; i++) {
+    new rotators.Sprite();
     rotators.collides(enemies, damagetoenemy);
+    // }
     bouncer = new Sprite(player.x + 40, player.y + 40);
     bouncer.color = "purple";
     bouncer.diameter = 20;
@@ -204,7 +211,7 @@ function generateleveloptions() {
     button1.remove();
     // should remove all buttons
     // add a card description
-    // only make a new sprite if (____on === false) for bouncer and waterfield
+    // only make a new sprite if (____on === false) for bouncer and water
     loop();
   });
 
@@ -252,7 +259,7 @@ window.mousePressed = () => {
 window.draw = () => {
   clear();
   checklevel();
-  framecounter++;
+  framecounter += 1;
   if (framecounter % 150 === 0) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
@@ -310,11 +317,14 @@ window.draw = () => {
   text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 10);
   // text("Cos:" + Math.cos(framecounter), windowWidth - 500, windowHeight * 1 / 20);
   if (rotatorson) {
-    for (let i = 0; i < rotators.length; i++) {
-      let circularx = Math.cos((framecounter + (360 / (i + 1))) / 20);
-      let circulary = Math.sin((framecounter + (360 / (i + 1))) / 20);
-      rotators[i].x = player.x + 120 * circularx;
-      rotators[i].y = player.y + 120 * circulary;
+    for (let i = 1; i < rotators.length + 1; i++) {
+      let spacing = (i * 2 * Math.PI / rotators.length);
+      // let circularx = Math.cos((spacing));
+      // let circulary = Math.sin((spacing));
+      let circularx = Math.cos(framecounter / 20) * Math.cos((spacing));
+      let circulary = Math.sin(framecounter / 20) * Math.sin((spacing));
+      rotators[i - 1].x = player.x + 100 * circularx;
+      rotators[i - 1].y = player.y + 100 * circulary;
     }
   }
   if (bounceron) {
