@@ -17,7 +17,6 @@ let BULLETDAMAGE;
 let PLAYERMAXHEALTH;
 let rotators;
 let rotatorson;
-// let rotatorct;
 let bouncer;
 let bounceron;
 let BOUNCESPEED;
@@ -26,15 +25,20 @@ let ydirection;
 let waterfielddiameter;
 let wateron;
 let waterfield;
+let fireballs;
+let fireballon;
+let fireballct;
+let RESISTANCE;
 
 // to do:
-// weapon upgrades (ninja stars that wack around, force field, things that shoot out in vertical, horizontal, and diagonal directions, bouncy stuff, bullet damage, health, speed)
 // buttons popup for upgrades
 // cleaner physics (fix experience and power up collisions)
 // animations + visual improvements + sound (health, experience, font, background, music, enemies, player, weapon)
 // clean up code (fix enemy spawn when running one direction, bouncing character makes them faster than their speed)
 // make a game over
 // make a menu
+// tutorial with text content in middle and enemies dont spawn until 10 seconds in
+// fix levelup glitch
 
 window.setup = () => {
   resetstats();
@@ -47,11 +51,14 @@ window.setup = () => {
   bombs.color = "black";
   bombs.diameter = 20;
   rotators = new Group();
-  rotators.color = "black";
+  rotators.color = "brown";
   rotators.diameter = 40;
   healths = new Group();
   healths.color = "orange";
   healths.diameter = 30;
+  fireballs = new Group();
+  fireballs.color = "red"
+  fireballs.diameter = 80;
   bullets = new Group();
   enemies = new Group();
 	experience = new Group();
@@ -65,6 +72,7 @@ window.setup = () => {
   player.overlaps(bombs, bombcollect);
   player.overlaps(healths, healthcollect);
   player.overlaps(bullets);
+  player.overlaps(rotators)
   experience.overlaps(bullets);
   experience.overlaps(enemies);
 	while (experience.length < 200) {
@@ -74,7 +82,7 @@ window.setup = () => {
     experience.y = () => random(0, windowHeight);
 	}
   player.rotationLock = true;
-  player.bounciness = 0;
+  player.bounciness = 0.001;
 };
 
 function resetstats() {
@@ -89,19 +97,21 @@ function resetstats() {
   PLAYERSPEED = 6;
   BULLETDAMAGE = 180;
   rotatorson = false;
-  // rotatorct = 0;
   bounceron = false;
   xdirection = 1;
   ydirection = 1;
   waterfielddiameter = 20;
   wateron = false;
+  fireballon = false;
+  fireballct = 0;
+  RESISTANCE = 1;
 }
 
 function timecounter() {
   // setInterval(function() {
   //   time += 1;
   // }, 1000);
-  time = 601;
+  time = 300;
 }
 
 function collect(player, experience) {
@@ -133,7 +143,7 @@ function healthcollect(player, health) {
 }
 
 function damagetoplayer(enemy, player) {
-  playerhealth -= Math.ceil(time / 60);
+  playerhealth -= RESISTANCE * Math.ceil(time / 60);
 }
 
 function damagetoenemy(weapon, enemy) {
@@ -165,33 +175,55 @@ function checklevel() {
     level = Math.pow(experiencepoints, 1/1.7);
   }
   if (experiencepoints % 50 === 0 && experiencepoints < 268 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
-    noLoop();
+    // noLoop();
     experiencepoints += 1;
     generateleveloptions();
   }
 }
 
 function generateleveloptions() {
-  //  6 should be upgrade options
+  let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase your Sun Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
+  //  upgrade options:
+  //  fireballs
+  //  rotators
+  //  speed
+  //  health
+  //  resistance
+  //  bouncy
+  //  water field
+  //  bullet dmg/amount
+  let option1 = Math.floor(random(0, 8));
+  let option2 = Math.floor(random(0, 8));
+  let option3 = Math.floor(random(0, 8));
+  while (option2 === option1) {
+    let option2 = Math.floor(random(0, 8));
+  }
+  while (option3 === option1 || option3 === option2) {
+    let option3 = Math.floor(random(0, 8));
+  }
+  let options = [option1, option2, option3];
   for (let i = 0; i < 3; i++) {
-    let button1 = createButton("upgrade gun");
-    button1.position(i * windowWidth / 3 + windowWidth / 7, 3 * windowHeight / 4);
-    button1.mousePressed(() => {
+    let button = createButton(powerups[options[i]][0]);
+    button.size(windowWidth / 10, windowHeight / 15);
+    button.position(i * windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5);
+    let card = rect(i * windowWidth / 3 + 2 * windowWidth / 35, windowHeight / 6, windowWidth / 10 + 4 * windowWidth / 35, 3 * windowHeight / 4);
+    // fill("white");
+    // let text = text(powerups[options[i]][1], i * windowWidth / 3 + 2 * windowWidth / 35, windowHeight / 6);
+    noLoop();
+    button.mousePressed(() => {
+    RESISTANCE -= .08;
     PLAYERMAXHEALTH += 100;
     playerhealth += 100;
     PLAYERSPEED += 1;
     BULLETDAMAGE *= 10
     // ^should upgrade gun
-    // rotatorct += 1;
     rotatorson = true;
-    // for (let i = 0; i < rotators.length; i++) {
-    //   rotators[i].remove();
-    // }
-    // for (let i = 0; i < rotatorct; i++) {
     new rotators.Sprite();
     rotators.collides(enemies, damagetoenemy);
-    // }
-    bouncer = new Sprite(player.x + 40, player.y + 40);
+    rotators.overlaps(experience);
+    if (!bounceron) {
+      bouncer = new Sprite(player.x + 40, player.y + 40);
+    }
     bouncer.color = "purple";
     bouncer.diameter = 20;
     bounceron = true;
@@ -199,16 +231,24 @@ function generateleveloptions() {
     bouncer.isSuperFast = true;
     bouncer.friction = 0;
     bouncer.overlaps(enemies, damagetoenemy);
-    waterfield = new Sprite(player.x, player.y);
-    waterfield.color = "blue";
-    waterfield.diameter += 10;
+    if (!wateron) {
+      waterfield = new Sprite(player.x, player.y);
+    }
+    waterfield.color = color(0,0,240,67);
+    waterfield.diameter += 20;
     wateron = true;
-    // waterfield.friction = 0;
     waterfield.overlaps(enemies, damagetoenemy);
     // ^ really this should slow them down through friction
+    waterfield.overlaps(experience);
+    fireballon = true;
+    fireballct += 1;
     player.overlaps(waterfield);
     player.overlaps(bouncer);
-    button1.remove();
+    player.overlaps(fireballs);
+    let buttons = selectAll("button");
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].remove();
+    }
     // should remove all buttons
     // add a card description
     // only make a new sprite if (____on === false) for bouncer and water
@@ -257,6 +297,12 @@ window.mousePressed = () => {
 }
 
 window.draw = () => {
+  // if (playerhealth < 1) {
+  //   rect(windowWidth * 3 / 10, windowHeight * 1 / 10, windowWidth * 4 / 10, windowHeight * 8 / 10);
+  //   fill(255, 255, 255);
+  //   text("Score:" + score, windowWidth / 2, windowHeight / 2);
+  //   noLoop();
+  // }
   clear();
   checklevel();
   framecounter += 1;
@@ -277,7 +323,7 @@ window.draw = () => {
     enemies[i].life += 1;
   }
   for (let i = 0; i < experience.length; i++) {
-    if (experience[i].x > player.x + 2 * windowWidth / 3 || experience[i].y > player.y + 2 * windowHeight / 3 || experience[i].x < player.x - 2 * windowWidth / 3 || experience[i].y < player.y - 2 * windowHeight / 3) {
+    if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
       experience[i].remove();
       // experiencepoints += .01;
       // fix so you cant run through
@@ -315,12 +361,9 @@ window.draw = () => {
   text("Score:" + score, windowWidth - 100, windowHeight * 1 / 20);
   text("Health:" + playerhealth + "/" + PLAYERMAXHEALTH, windowWidth * 9 / 12, windowHeight * 2 / 15);
   text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 10);
-  // text("Cos:" + Math.cos(framecounter), windowWidth - 500, windowHeight * 1 / 20);
   if (rotatorson) {
     for (let i = 1; i < rotators.length + 1; i++) {
       let spacing = (i * 2 * Math.PI / rotators.length);
-      // let circularx = Math.cos((spacing));
-      // let circulary = Math.sin((spacing));
       let circularx = Math.cos(framecounter / 20) * Math.cos((spacing));
       let circulary = Math.sin(framecounter / 20) * Math.sin((spacing));
       rotators[i - 1].x = player.x + 100 * circularx;
@@ -342,7 +385,24 @@ window.draw = () => {
   if (wateron) {
     waterfield.x = player.x;
     waterfield.y = player.y;
-    // waterfield.x = 20;
-    // waterfield.y = 20;
+  }
+  if (fireballon && framecounter % 200 === 0) {
+    for (let i = 0; i < fireballct; i++) {
+      let fireball = new fireballs.Sprite();
+      fireball.x = player.x;
+      fireball.y = player.y;
+      fireball.overlaps(fireballs);
+      fireball.overlaps(experience);
+      fireballs.overlaps(enemies, damagetoenemy);
+      fireballs.overlaps(rotators);
+      fireballs.overlaps(waterfield);
+      fireballs.overlaps(bouncer);
+      let spacing = (i * 2 * Math.PI / fireballct);
+      fireball.moveTowards(player.x + 200 * Math.cos(spacing), player.y + 200 * Math.sin(spacing));
+      if (fireballs[i].x > player.x + 2 * windowWidth / 3 || fireballs[i].y > player.y + 2 * windowHeight / 3 || fireballs[i].x < player.x - 2 * windowWidth / 3 || fireballs[i].y < player.y - 2 * windowHeight / 3) {
+        fireballs[i].remove();
+      }
+    }
+    // need to find a way to reset fireballs every x frames
   }
 };
