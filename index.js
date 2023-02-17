@@ -49,6 +49,7 @@ let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing mas
 // make a game over
 // make a menu
 // tutorial with text content in middle and enemies dont spawn until 10 seconds in
+// clear when lagging
 
 window.setup = () => {
   resetstats();
@@ -144,7 +145,6 @@ function collect(player, experience) {
 }
 
 function bombcollect(player, bomb) {
-  // could make look cooler
   bomb.remove();
   for (let i = 0; i < enemies.length; i++) {
     bombdamagetoenemy(bomb, enemies[i]);
@@ -152,7 +152,6 @@ function bombcollect(player, bomb) {
 }
 
 function healthcollect(player, health) {
-  // could make look cooler
   health.remove();
   playerhealth = PLAYERMAXHEALTH;
 }
@@ -162,25 +161,6 @@ function damagetoplayer(enemy, player) {
   fill(255,0,0,30);
   rect(0, 0, windowWidth, windowHeight);
 }
-
-// function damagetoenemy(weapon, enemy) {
-//   enemy.life -= BULLETDAMAGE;
-//   if (enemy.life < 1) {
-//     if (random(10) > 2) {
-//     new experience.Sprite(enemy.x, enemy.y);
-//     }
-//     if (random(1000) > 998) {
-//       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
-//     }
-//     if (random(1000) > 997) {
-//       new healths.Sprite(enemy.x + 10, enemy.y - 10);
-//     }
-//     enemy.remove();
-//     score += 100 + 5 * time;
-//   }
-//   // weapon.remove();
-//   // ^only for bullet
-// }
 
 function bulletdamagetoenemy(weapon, enemy) {
   enemy.life -= BULLETDAMAGE;
@@ -256,11 +236,8 @@ function generateleveloptions() {
   let options = [option1, option2, option3];
   for (let i = 0; i < 3; i++) {
     let buttonback = createButton(powerups[options[i]][1]);
-    // buttonback.style("background-color", "white");
-    // buttonback.style("border", "2px solid lightgrey");
     buttonback.style("border-radius", "15px");
     buttonback.style("background-image", "radial-gradient(#FDFF7A 21%, #FFD87A 80%)");
-    // buttonback:hover.style("background-position", "right center");
     buttonback.style("font-size", "35px");
     buttonback.size(windowWidth / 4, 2 * windowHeight / 3);
     buttonback.position(i * windowWidth / 3 + 1 * windowWidth / 26, 1 * windowHeight / 5);
@@ -270,13 +247,6 @@ function generateleveloptions() {
     button.size(windowWidth / 10, windowHeight / 15);
     button.position(i * windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5 - 20);
     button.attribute = options[i];
-    // let text = text("hi", 1, 1);
-    // new cards.Sprite(i * windowWidth / 3 + 2 * windowWidth / 35 + player.x, windowHeight / 6, windowWidth / 10 + 4 * windowWidth / 35, 3 * windowHeight / 4);
-    // cards.text = "Hello!";
-    // card.textColor = "white";
-    // fill("white");
-    // let text = text(powerups[options[i]][1], i * windowWidth / 3 + 2 * windowWidth / 35, windowHeight / 6);
-    // let text = text("hi", 1, 1);
     noLoop();
     button.mousePressed(() => {
     if (button.attribute === 0) {
@@ -309,8 +279,8 @@ function generateleveloptions() {
         bouncer.x = player.x;
         bouncer.y = player.y;
         bounceron = true;
-        // bouncer.isSuperFast = true;
-        // bouncer.friction = 0;
+        bouncer.isSuperFast = true;
+        bouncer.friction = 0;
       } else {
         BOUNCESPEED += 2;
         BOUNCERDAMAGE += 100;
@@ -393,9 +363,7 @@ window.draw = () => {
   //   noLoop();
   // }
   framecounter += 1;
-  // if (framecounter % 6 === 0) {
   clear();
-  // }
   if (framecounter % 150 === 0) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
@@ -484,8 +452,6 @@ window.draw = () => {
       let fireball = new fireballs.Sprite();
       fireball.x = player.x;
       fireball.y = player.y;
-      // fireballs.overlaps(experience);
-      // fireballs.overlaps(enemies, damagetoenemy);
       fireball.speed = 40;
       let spacing = (i * 2 * Math.PI / fireballct);
       fireball.moveTowards(player.x + 200 * Math.cos(spacing), player.y + 200 * Math.sin(spacing));
@@ -493,12 +459,11 @@ window.draw = () => {
         fireballs[i].remove();
       }
     }
-    // need to find a way to reset fireballs every x frames
   }
-  if (time % 90 === 0) {
-    for (let i = 1; i < allSprites.length; i++) {
-      allSprites[i].remove();
-    }
-  }
-  // player.text = bouncer.x;
+  // if (allSprites.length > 400) {
+  //   for (let i = 200; i < allSprites.length; i++) {
+  //     allSprites[i].remove();
+  //   }
+  //  determine when to clear the canvas of sprites
+  // }
 };
