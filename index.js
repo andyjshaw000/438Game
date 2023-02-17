@@ -29,16 +29,25 @@ let fireballs;
 let fireballon;
 let fireballct;
 let RESISTANCE;
+let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase your Sun Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
+//  upgrade options:
+//  fireballs
+//  rotators
+//  speed
+//  health
+//  resistance
+//  bouncy
+//  water field
+//  bullet dmg/amount
 
 // to do:
-// buttons popup for upgrades
+// fix bugs with bouncer overlapping and fireballs overlapping not doing damage, levels not working correctly, fireballs moving slowly
 // cleaner physics (fix experience and power up collisions)
 // animations + visual improvements + sound (health, experience, font, background, music, enemies, player, weapon)
 // clean up code (fix enemy spawn when running one direction, bouncing character makes them faster than their speed)
 // make a game over
 // make a menu
 // tutorial with text content in middle and enemies dont spawn until 10 seconds in
-// fix levelup glitch
 
 window.setup = () => {
   resetstats();
@@ -72,10 +81,12 @@ window.setup = () => {
   player.overlaps(bombs, bombcollect);
   player.overlaps(healths, healthcollect);
   player.overlaps(bullets);
-  player.overlaps(rotators)
+  player.overlaps(rotators);
+  player.overlaps(fireballs);
   experience.overlaps(bullets);
   experience.overlaps(enemies);
-	while (experience.length < 200) {
+  fireballs.overlaps(rotators);
+	while (experience.length < 400) {
     // spawn less in beginning
     new experience.Sprite();
     experience.x = () => random(0, windowWidth);
@@ -117,6 +128,7 @@ function timecounter() {
 function collect(player, experience) {
   experience.remove();
   experiencepoints += 1;
+  checklevel();
 }
 
 function magnetcollect(player, magnet) {
@@ -175,83 +187,96 @@ function checklevel() {
     level = Math.pow(experiencepoints, 1/1.7);
   }
   if (experiencepoints % 50 === 0 && experiencepoints < 268 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
-    // noLoop();
-    experiencepoints += 1;
     generateleveloptions();
   }
 }
 
 function generateleveloptions() {
-  let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase your Sun Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
-  //  upgrade options:
-  //  fireballs
-  //  rotators
-  //  speed
-  //  health
-  //  resistance
-  //  bouncy
-  //  water field
-  //  bullet dmg/amount
   let option1 = Math.floor(random(0, 8));
   let option2 = Math.floor(random(0, 8));
   let option3 = Math.floor(random(0, 8));
   while (option2 === option1) {
-    let option2 = Math.floor(random(0, 8));
+    option2 = Math.floor(random(0, 8));
   }
   while (option3 === option1 || option3 === option2) {
-    let option3 = Math.floor(random(0, 8));
+    option3 = Math.floor(random(0, 8));
   }
   let options = [option1, option2, option3];
   for (let i = 0; i < 3; i++) {
+    let buttonback = createButton(powerups[options[i]][1]);
+    buttonback.style("background-color", "white");
+    buttonback.style("border", "2px solid lightgrey");
+    buttonback.style("border-radius", "15px");
+    buttonback.style("background-image", "radial-gradient(yellow 11%, #fda085 100%)");
+    // buttonback:hover.style("background-position", "right center");
+    buttonback.style("font-size", "30px");
+    buttonback.size(windowWidth / 4, 2 * windowHeight / 3);
+    buttonback.position(i * windowWidth / 3 + 1 * windowWidth / 26, 1 * windowHeight / 5);
     let button = createButton(powerups[options[i]][0]);
     button.size(windowWidth / 10, windowHeight / 15);
     button.position(i * windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5);
-    let card = rect(i * windowWidth / 3 + 2 * windowWidth / 35, windowHeight / 6, windowWidth / 10 + 4 * windowWidth / 35, 3 * windowHeight / 4);
+    button.attribute = options[i];
+    // let text = text("hi", 1, 1);
+    // new cards.Sprite(i * windowWidth / 3 + 2 * windowWidth / 35 + player.x, windowHeight / 6, windowWidth / 10 + 4 * windowWidth / 35, 3 * windowHeight / 4);
+    // cards.text = "Hello!";
+    // card.textColor = "white";
     // fill("white");
     // let text = text(powerups[options[i]][1], i * windowWidth / 3 + 2 * windowWidth / 35, windowHeight / 6);
+    // let text = text("hi", 1, 1);
     noLoop();
     button.mousePressed(() => {
-    RESISTANCE -= .08;
-    PLAYERMAXHEALTH += 100;
-    playerhealth += 100;
-    PLAYERSPEED += 1;
-    BULLETDAMAGE *= 10
-    // ^should upgrade gun
-    rotatorson = true;
-    new rotators.Sprite();
-    rotators.collides(enemies, damagetoenemy);
-    rotators.overlaps(experience);
-    if (!bounceron) {
-      bouncer = new Sprite(player.x + 40, player.y + 40);
+    // player.text = button.attribute;
+    if (button.attribute === 0) {
+      if (!fireballon) {
+        fireballon = true;
+      }
+      fireballct += 1;
+    } else if (button.attribute === 1) {
+      rotatorson = true;
+      new rotators.Sprite();
+      rotators.collides(enemies, damagetoenemy);
+      rotators.overlaps(experience);
+    } else if (button.attribute === 2) {
+      PLAYERSPEED += 1;
+    } else if (button.attribute === 3) {
+      PLAYERMAXHEALTH += 100;
+      playerhealth += 100;
+    } else if (button.attribute === 4) {
+      RESISTANCE -= .08;
+    } else if (button.attribute === 5) {
+      if (!bounceron) {
+        bouncer = new Sprite(player.x + 40, player.y + 40);
+        bouncer.color = "purple";
+        bouncer.diameter = 20;
+        bounceron = true;
+        BOUNCESPEED = 10;
+        bouncer.isSuperFast = true;
+        bouncer.friction = 0;
+      } else {
+        BOUNCESPEED += 10;
+      }
+      bouncer.overlaps(enemies, damagetoenemy);
+      bouncer.overlaps(fireballs);
+      player.overlaps(bouncer);
+    } else if (button.attribute === 6) {
+      BULLETDAMAGE *= 10;
+    } else if (button.attribute === 7) {
+      if (!wateron) {
+        waterfield = new Sprite(player.x, player.y);
+      }
+      waterfield.color = color(0,0,240,67);
+      waterfield.diameter += 20;
+      wateron = true;
+      waterfield.overlapping(enemies, damagetoenemy);
+      // ^ really this should slow them down through friction
+      waterfield.overlaps(experience);
+      waterfield.overlaps(fireballs);
+      player.overlaps(waterfield);
     }
-    bouncer.color = "purple";
-    bouncer.diameter = 20;
-    bounceron = true;
-    BOUNCESPEED = 10;
-    bouncer.isSuperFast = true;
-    bouncer.friction = 0;
-    bouncer.overlaps(enemies, damagetoenemy);
-    if (!wateron) {
-      waterfield = new Sprite(player.x, player.y);
-    }
-    waterfield.color = color(0,0,240,67);
-    waterfield.diameter += 20;
-    wateron = true;
-    waterfield.overlaps(enemies, damagetoenemy);
-    // ^ really this should slow them down through friction
-    waterfield.overlaps(experience);
-    fireballon = true;
-    fireballct += 1;
-    player.overlaps(waterfield);
-    player.overlaps(bouncer);
-    player.overlaps(fireballs);
     let buttons = selectAll("button");
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].remove();
     }
-    // should remove all buttons
-    // add a card description
-    // only make a new sprite if (____on === false) for bouncer and water
     loop();
   });
 
@@ -304,7 +329,6 @@ window.draw = () => {
   //   noLoop();
   // }
   clear();
-  checklevel();
   framecounter += 1;
   if (framecounter % 150 === 0) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
@@ -325,8 +349,6 @@ window.draw = () => {
   for (let i = 0; i < experience.length; i++) {
     if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
       experience[i].remove();
-      // experiencepoints += .01;
-      // fix so you cant run through
     }
   }
   if (kb.pressing("down") && kb.pressing("left")) {
@@ -359,7 +381,7 @@ window.draw = () => {
   rect(windowWidth * 3 / 10, windowHeight * 1 / 10, map(level- Math.floor(level), 0, 1, 0, windowWidth * 4 / 10), windowHeight * 1 / 20);
   fill("black");
   text("Score:" + score, windowWidth - 100, windowHeight * 1 / 20);
-  text("Health:" + playerhealth + "/" + PLAYERMAXHEALTH, windowWidth * 9 / 12, windowHeight * 2 / 15);
+  text("Health:" + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 9 / 12, windowHeight * 2 / 15);
   text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 10);
   if (rotatorson) {
     for (let i = 1; i < rotators.length + 1; i++) {
@@ -391,12 +413,8 @@ window.draw = () => {
       let fireball = new fireballs.Sprite();
       fireball.x = player.x;
       fireball.y = player.y;
-      fireball.overlaps(fireballs);
-      fireball.overlaps(experience);
+      fireballs.overlaps(experience);
       fireballs.overlaps(enemies, damagetoenemy);
-      fireballs.overlaps(rotators);
-      fireballs.overlaps(waterfield);
-      fireballs.overlaps(bouncer);
       let spacing = (i * 2 * Math.PI / fireballct);
       fireball.moveTowards(player.x + 200 * Math.cos(spacing), player.y + 200 * Math.sin(spacing));
       if (fireballs[i].x > player.x + 2 * windowWidth / 3 || fireballs[i].y > player.y + 2 * windowHeight / 3 || fireballs[i].x < player.x - 2 * windowWidth / 3 || fireballs[i].y < player.y - 2 * windowHeight / 3) {
