@@ -9,7 +9,6 @@ let difficulty;
 let time;
 let framecounter;
 let bullets;
-let magnets;
 let bombs;
 let healths;
 let PLAYERSPEED;
@@ -41,7 +40,6 @@ let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing mas
 //  bullet dmg/amount
 
 // to do:
-// fix bugs with bouncer overlapping and fireballs overlapping not doing damage, levels not working correctly, fireballs moving slowly
 // cleaner physics (fix experience and power up collisions)
 // animations + visual improvements + sound (health, experience, font, background, music, enemies, player, weapon)
 // clean up code (fix enemy spawn when running one direction, bouncing character makes them faster than their speed)
@@ -53,9 +51,6 @@ window.setup = () => {
   resetstats();
   timecounter();
   createCanvas(windowWidth, windowHeight);
-  magnets = new Group();
-  magnets.color = "red";
-  magnets.diameter = 20;
   bombs = new Group();
   bombs.color = "black";
   bombs.diameter = 20;
@@ -77,7 +72,6 @@ window.setup = () => {
   player = new Sprite(windowWidth / 2, windowHeight / 2, 25, 25);
   player.color = "yellow";
   player.overlaps(experience, collect);
-  player.overlaps(magnets, magnetcollect);
   player.overlaps(bombs, bombcollect);
   player.overlaps(healths, healthcollect);
   player.overlaps(bullets);
@@ -86,6 +80,7 @@ window.setup = () => {
   experience.overlaps(bullets);
   experience.overlaps(enemies);
   fireballs.overlaps(rotators);
+  fireballs.overlaps(fireballs);
 	while (experience.length < 400) {
     // spawn less in beginning
     new experience.Sprite();
@@ -94,6 +89,9 @@ window.setup = () => {
 	}
   player.rotationLock = true;
   player.bounciness = 0.001;
+  fireballs.overlaps(experience);
+  fireballs.overlapping(enemies, damagetoenemy);
+  // overlapchecker();
 };
 
 function resetstats() {
@@ -118,6 +116,10 @@ function resetstats() {
   RESISTANCE = 1;
 }
 
+// function overlapchecker() {
+
+// }
+
 function timecounter() {
   // setInterval(function() {
   //   time += 1;
@@ -129,15 +131,6 @@ function collect(player, experience) {
   experience.remove();
   experiencepoints += 1;
   checklevel();
-}
-
-function magnetcollect(player, magnet) {
-  magnet.remove();
-  // could make look cooler
-  for (let i = 0; i < experience.length; i++) {
-    experience[i].remove();
-    experiencepoints += 1
-  }
 }
 
 function bombcollect(player, bomb) {
@@ -163,9 +156,6 @@ function damagetoenemy(weapon, enemy) {
   if (enemy.life < 1) {
     if (random(10) > 2) {
     new experience.Sprite(enemy.x, enemy.y);
-    }
-    if (random(1000) > 996) {
-      new magnets.Sprite(enemy.x + 10, enemy.y + 10);
     }
     if (random(1000) > 998) {
       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
@@ -247,7 +237,7 @@ function generateleveloptions() {
       if (!bounceron) {
         bouncer = new Sprite(player.x + 40, player.y + 40);
         bouncer.color = "purple";
-        bouncer.diameter = 20;
+        bouncer.diameter = 40;
         bounceron = true;
         BOUNCESPEED = 10;
         bouncer.isSuperFast = true;
@@ -255,7 +245,7 @@ function generateleveloptions() {
       } else {
         BOUNCESPEED += 10;
       }
-      bouncer.overlaps(enemies, damagetoenemy);
+      bouncer.overlapping(enemies, damagetoenemy);
       bouncer.overlaps(fireballs);
       player.overlaps(bouncer);
     } else if (button.attribute === 6) {
@@ -413,8 +403,9 @@ window.draw = () => {
       let fireball = new fireballs.Sprite();
       fireball.x = player.x;
       fireball.y = player.y;
-      fireballs.overlaps(experience);
-      fireballs.overlaps(enemies, damagetoenemy);
+      // fireballs.overlaps(experience);
+      // fireballs.overlaps(enemies, damagetoenemy);
+      fireball.speed = 40;
       let spacing = (i * 2 * Math.PI / fireballct);
       fireball.moveTowards(player.x + 200 * Math.cos(spacing), player.y + 200 * Math.sin(spacing));
       if (fireballs[i].x > player.x + 2 * windowWidth / 3 || fireballs[i].y > player.y + 2 * windowHeight / 3 || fireballs[i].x < player.x - 2 * windowWidth / 3 || fireballs[i].y < player.y - 2 * windowHeight / 3) {
