@@ -59,7 +59,7 @@ window.setup = () => {
   bombs.diameter = 20;
   rotators = new Group();
   rotators.color = "brown";
-  rotators.diameter = 40;
+  rotators.diameter = 60;
   healths = new Group();
   healths.color = "orange";
   healths.diameter = 30;
@@ -67,6 +67,8 @@ window.setup = () => {
   fireballs.color = "red"
   fireballs.diameter = 80;
   bullets = new Group();
+  bouncer = new Group();
+  waterfield = new Group();
   enemies = new Group();
 	experience = new Group();
 	experience.color = "lightgreen";
@@ -105,9 +107,9 @@ function resetstats() {
   score = 0;
   experiencepoints = 90;
   level = 1;
-  time = 0;
+  time = 290;
   framecounter = 0;
-  PLAYERSPEED = 6;
+  PLAYERSPEED = 4;
   BULLETDAMAGE = 180;
   rotatorson = false;
   bounceron = false;
@@ -117,10 +119,11 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 180;
-  WATERFIELDDAMAGE = 1.5;
-  BOUNCERDAMAGE = 800;
+  FIREBALLDAMAGE = 200;
+  WATERFIELDDAMAGE = 1.75;
+  BOUNCERDAMAGE = 500;
   ROTATORDAMAGE = 350;
+  BOUNCESPEED = 15;
 }
 
 function overlapchecker() {
@@ -128,10 +131,10 @@ function overlapchecker() {
 }
 
 function timecounter() {
-  // setInterval(function() {
-  //   time += 1;
-  // }, 1000);
-  time = 300;
+  setInterval(function() {
+    time += 1;
+  }, 1000);
+  // time = 300;
 }
 
 function collect(player, experience) {
@@ -276,7 +279,6 @@ function generateleveloptions() {
     // let text = text("hi", 1, 1);
     noLoop();
     button.mousePressed(() => {
-    // player.text = button.attribute;
     if (button.attribute === 0) {
       if (!fireballon) {
         fireballon = true;
@@ -290,29 +292,31 @@ function generateleveloptions() {
     } else if (button.attribute === 2) {
       PLAYERSPEED += 1;
     } else if (button.attribute === 3) {
-      PLAYERMAXHEALTH += 100;
-      playerhealth += 100;
+      let healthgained = PLAYERMAXHEALTH;
+      PLAYERMAXHEALTH += healthgained;
+      playerhealth += healthgained;
     } else if (button.attribute === 4) {
       if (RESISTANCE > .5) {
+        RESISTANCE -= .2;
+      } else if (RESISTANCE > .1) {
         RESISTANCE -= .1;
-      } else if (RESISTANCE > .05) {
-        RESISTANCE -= .05;
       } else {
         RESISTANCE = .01;
       }
     } else if (button.attribute === 5) {
       if (!bounceron) {
-        bouncer = new Sprite(player.x + 40, player.y + 40);
-        bouncer.color = "purple";
-        bouncer.diameter = 55;
+        new bouncer.Sprite();
+        bouncer.x = player.x;
+        bouncer.y = player.y;
         bounceron = true;
-        BOUNCESPEED = 15;
-        bouncer.isSuperFast = true;
-        bouncer.friction = 0;
+        // bouncer.isSuperFast = true;
+        // bouncer.friction = 0;
       } else {
-        // BOUNCESPEED += 2;
+        BOUNCESPEED += 2;
         BOUNCERDAMAGE += 100;
       }
+      bouncer.color = "purple";
+      bouncer.diameter = 55;
       bouncer.overlaps(enemies, bouncerdamagetoenemy);
       bouncer.overlaps(fireballs);
       player.overlaps(bouncer);
@@ -320,7 +324,7 @@ function generateleveloptions() {
       BULLETDAMAGE += 220;
     } else if (button.attribute === 7) {
       if (!wateron) {
-        waterfield = new Sprite(player.x, player.y);
+        new waterfield.Sprite(player.x, player.y);
         waterfield.diameter = 150;
       }
       waterfield.color = color(0,0,240,67);
@@ -388,8 +392,10 @@ window.draw = () => {
   //   text("Score:" + score, windowWidth / 2, windowHeight / 2);
   //   noLoop();
   // }
-  clear();
   framecounter += 1;
+  // if (framecounter % 6 === 0) {
+  clear();
+  // }
   if (framecounter % 150 === 0) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
@@ -403,7 +409,7 @@ window.draw = () => {
       spawnenemy();
       // fix so you cant run through
     }
-    enemies[i].moveTo(player.x, player.y, 5 + time / 225);
+    enemies[i].moveTo(player.x, player.y, 3 + time / 225);
     if (enemies[i].drag === -1) {
       enemies[i].moveTo(player.x, player.y, .15 * (5 + time / 225));
       enemies[i].drag = 0;
@@ -452,8 +458,8 @@ window.draw = () => {
       let spacing = (i * 2 * Math.PI / rotators.length);
       let circularx = Math.cos(framecounter / 20) * Math.cos((spacing));
       let circulary = Math.sin(framecounter / 20) * Math.sin((spacing));
-      rotators[i - 1].x = player.x + 120 * circularx;
-      rotators[i - 1].y = player.y + 120 * circulary;
+      rotators[i - 1].x = player.x + 150 * circularx;
+      rotators[i - 1].y = player.y + 150 * circulary;
     }
   }
   if (bounceron) {
@@ -471,6 +477,7 @@ window.draw = () => {
   if (wateron) {
     waterfield.x = player.x;
     waterfield.y = player.y;
+    // player.text = waterfield.x;
   }
   if (fireballon && framecounter % 200 === 0) {
     for (let i = 0; i < fireballct; i++) {
@@ -488,4 +495,10 @@ window.draw = () => {
     }
     // need to find a way to reset fireballs every x frames
   }
+  if (time % 90 === 0) {
+    for (let i = 1; i < allSprites.length; i++) {
+      allSprites[i].remove();
+    }
+  }
+  // player.text = bouncer.x;
 };
