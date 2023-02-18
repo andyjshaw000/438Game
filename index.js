@@ -30,77 +30,48 @@ let FIREBALLDAMAGE;
 let WATERFIELDDAMAGE;
 let BOUNCERDAMAGE;
 let ROTATORDAMAGE;
+let backgroundsounds;
+// let testimage;
 let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase Sun Orb Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
-//  upgrade options:
-//  fireballs
-//  rotators
-//  speed
-//  health
-//  resistance
-//  bouncy
-//  water field
-//  bullet dmg/amount
 
+function preload() {
+  testimage = loadAnimation("images/test");
+  // soundFormats("mp3");
+  // backgroundsounds = loadSound("music/background.mp3");
+}
 // to do:
 // different color card based on powerup
-// collision clean up
 // animations + visual improvements + sound (health, experience, font, background, music, enemies, player, weapon)
 // clean up code (fix enemy spawn when running one direction, bouncing character makes them faster than their speed)
 // make a game over
 // make a menu
 // tutorial with text content in middle and enemies dont spawn until 10 seconds in
-// clear when lagging
 
 window.setup = () => {
+  player = new Sprite(windowWidth / 2, windowHeight / 2, 25, 25);
   resetstats();
+  groupinit();
+  physicsinit();
+  // player.addAnimation("testimage", testimage);
+  // visualinit();
   timecounter();
   createCanvas(windowWidth, windowHeight);
-  bombs = new Group();
-  bombs.color = "black";
-  bombs.diameter = 20;
-  rotators = new Group();
-  rotators.color = "brown";
-  rotators.diameter = 60;
-  healths = new Group();
-  healths.color = "orange";
-  healths.diameter = 30;
-  fireballs = new Group();
-  fireballs.color = "red"
-  fireballs.diameter = 80;
-  bullets = new Group();
-  bouncer = new Group();
-  waterfield = new Group();
-  enemies = new Group();
-	experience = new Group();
-	experience.color = "lightgreen";
-	experience.diameter = 8;
-  noStroke();
-  player = new Sprite(windowWidth / 2, windowHeight / 2, 25, 25);
-  player.color = "yellow";
-  player.overlaps(experience, collect);
-  player.overlaps(bombs, bombcollect);
-  player.overlaps(healths, healthcollect);
-  player.overlaps(bullets);
-  player.overlaps(rotators);
-  player.overlaps(fireballs);
-  player.collider = "kinematic";
-  experience.overlaps(bullets);
-  experience.overlaps(enemies);
-  fireballs.overlaps(rotators);
-  fireballs.overlaps(fireballs);
 	while (experience.length < 400) {
     // spawn less in beginning
     new experience.Sprite();
     experience.x = () => random(0, windowWidth);
     experience.y = () => random(0, windowHeight);
 	}
-  player.rotationLock = true;
-  player.bounciness = 0.001;
-  fireballs.overlaps(experience);
-  fireballs.overlapping(enemies, fireballdamagetoenemy);
-  enemies.mass = 0;
   overlapchecker();
+  backgroundmusic();
 };
+
+function backgroundmusic() {
+  // backgroundsounds.play();
+  // backgroundsounds.loop();
+  // backgroundsounds.setVolume(.5);
+  // userStartAudio();
+}
 
 function resetstats() {
   playerhealth = 100;
@@ -120,15 +91,119 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 200;
-  WATERFIELDDAMAGE = 1.75;
-  BOUNCERDAMAGE = 500;
-  ROTATORDAMAGE = 350;
-  BOUNCESPEED = 15;
+  FIREBALLDAMAGE = 140;
+  WATERFIELDDAMAGE = 2.75;
+  BOUNCERDAMAGE = 650;
+  ROTATORDAMAGE = 550;
+  BOUNCESPEED = 14;
+}
+
+function groupinit() {
+  bombs = new Group();
+  rotators = new Group();
+  healths = new Group();
+  bullets = new Group();
+  bouncer = new Group();
+  waterfield = new Group();
+  enemies = new Group();
+	experience = new Group();
+  fireballs = new Group();
+}
+
+function physicsinit() {
+  bullets.shapeColor = color("orange");
+  bullets.rotateToDirection = true;
+  player.color = "yellow";
+  bombs.color = "black";
+  bombs.diameter = 20;
+  rotators.color = "brown";
+  rotators.diameter = 60;
+  healths.color = "orange";
+  healths.diameter = 30;
+  fireballs.color = "red"
+  fireballs.diameter = 80;
+	experience.color = "lightgreen";
+	experience.diameter = 8;
+  player.collider = "kinematic";
+  player.rotationLock = true;
+  player.bounciness = 0.001;
+  enemies.mass = 0;
+  bouncer.isSuperFast = true;
+  bouncer.friction = 0;
+  bouncer.x = player.x;
+  bouncer.y = player.y;
+  bouncer.color = "purple";
+  bouncer.diameter = 55;
+  waterfield.diameter = 180;
+  waterfield.color = color(0,0,240,67);
+  enemies.width = 3 * player.width / 4;
+  enemies.height = 3 * player.height / 4;
+  enemies.color = "black";
+  enemies.rotateToDirection = true;
 }
 
 function overlapchecker() {
   let sprites = [player, experience, enemies, bullets, bombs, healths, rotators, bouncer, waterfield, fireballs];
+  player.overlaps(experience, experiencecollect);
+  enemies.collides(player, damagetoplayer);
+  player.overlaps(bullets);
+  player.overlaps(bombs, bombcollect);
+  player.overlaps(healths, healthcollect);
+  player.overlaps(rotators);
+  player.overlaps(fireballs);
+  player.overlaps(waterfield);
+  player.overlaps(bouncer);
+
+  experience.overlaps(experience);
+  experience.overlaps(bullets);
+  experience.overlaps(enemies);
+  experience.overlaps(bombs);
+  experience.overlaps(healths);
+  experience.overlaps(rotators);
+  experience.overlaps(bouncer);
+  experience.overlaps(waterfield);
+  experience.overlaps(fireballs);
+
+  enemies.overlaps(bombs);
+  enemies.overlaps(healths);
+  fireballs.overlapping(enemies, fireballdamagetoenemy);
+  rotators.collides(enemies, rotatordamagetoenemy);
+  bouncer.overlaps(enemies, bouncerdamagetoenemy);
+  waterfield.overlapping(enemies, waterfielddamagetoenemy);
+  bullets.collides(enemies, bulletdamagetoenemy);
+
+  bullets.overlaps(bullets);
+  bullets.overlaps(bombs);
+  bullets.overlaps(healths);
+  bullets.overlaps(rotators);
+  bullets.overlaps(bouncer);
+  bullets.overlaps(waterfield);
+  bullets.overlaps(fireballs);
+
+  bombs.overlaps(bombs);
+  bombs.overlaps(healths);
+  bombs.overlaps(rotators);
+  bombs.overlaps(bouncer);
+  bombs.overlaps(waterfield);
+  bombs.overlaps(fireballs);
+
+  healths.overlaps(healths);
+  healths.overlaps(rotators);
+  healths.overlaps(bouncer);
+  healths.overlaps(waterfield);
+  healths.overlaps(fireballs);
+
+  rotators.overlaps(rotators);
+  rotators.overlaps(bouncer);
+  rotators.overlaps(waterfield);
+  rotators.overlaps(fireballs);
+
+  bouncer.overlaps(waterfield);
+  bouncer.overlaps(fireballs);
+
+  waterfield.overlaps(fireballs);
+
+  fireballs.overlaps(fireballs);
 }
 
 function timecounter() {
@@ -138,7 +213,7 @@ function timecounter() {
   // time = 300;
 }
 
-function collect(player, experience) {
+function experiencecollect(player, experience) {
   experience.remove();
   experiencepoints += 1;
   checklevel();
@@ -156,8 +231,8 @@ function healthcollect(player, health) {
   playerhealth = PLAYERMAXHEALTH;
 }
 
-function damagetoplayer(enemy, player) {
-  playerhealth -= RESISTANCE * Math.ceil(time / 60);
+function damagetoplayer(player) {
+  playerhealth -= RESISTANCE * time / 300;
   fill(255,0,0,30);
   rect(0, 0, windowWidth, windowHeight);
 }
@@ -175,7 +250,9 @@ function fireballdamagetoenemy(weapon, enemy) {
 
 function waterfielddamagetoenemy(weapon, enemy) {
   enemy.life -= WATERFIELDDAMAGE;
-  enemy.drag = -1;
+  if (enemy.drag != -2) {
+    enemy.drag = -1;
+  }
   enemykilledupdate(enemy);
 }
 
@@ -186,6 +263,7 @@ function bouncerdamagetoenemy(weapon, enemy) {
 
 function rotatordamagetoenemy(weapon, enemy) {
   enemy.life -= ROTATORDAMAGE;
+  enemy.drag = -2;
   enemykilledupdate(enemy);
 }
 
@@ -197,7 +275,7 @@ function bombdamagetoenemy(weapon, enemy) {
 function enemykilledupdate(enemy) {
   if (enemy.life < 1) {
     if (random(10) > 2) {
-    new experience.Sprite(enemy.x, enemy.y);
+      new experience.Sprite(enemy.x, enemy.y);
     }
     if (random(1000) > 998) {
       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
@@ -254,11 +332,11 @@ function generateleveloptions() {
         fireballon = true;
       }
       fireballct += 1;
+      FIREBALLDAMAGE += 15;
     } else if (button.attribute === 1) {
       rotatorson = true;
       new rotators.Sprite();
-      rotators.collides(enemies, rotatordamagetoenemy);
-      rotators.overlaps(experience);
+      ROTATORDAMAGE += 30;
     } else if (button.attribute === 2) {
       PLAYERSPEED += 1;
     } else if (button.attribute === 3) {
@@ -276,34 +354,20 @@ function generateleveloptions() {
     } else if (button.attribute === 5) {
       if (!bounceron) {
         new bouncer.Sprite();
-        bouncer.x = player.x;
-        bouncer.y = player.y;
         bounceron = true;
-        bouncer.isSuperFast = true;
-        bouncer.friction = 0;
       } else {
-        BOUNCESPEED += 2;
-        BOUNCERDAMAGE += 100;
+        BOUNCESPEED += 1;
+        BOUNCERDAMAGE += 50;
       }
-      bouncer.color = "purple";
-      bouncer.diameter = 55;
-      bouncer.overlaps(enemies, bouncerdamagetoenemy);
-      bouncer.overlaps(fireballs);
-      player.overlaps(bouncer);
     } else if (button.attribute === 6) {
       BULLETDAMAGE += 220;
     } else if (button.attribute === 7) {
       if (!wateron) {
-        new waterfield.Sprite(player.x, player.y);
-        waterfield.diameter = 150;
+        new waterfield.Sprite();
+        wateron = true;
+      } else {
+        waterfield.diameter += 50;
       }
-      waterfield.color = color(0,0,240,67);
-      waterfield.diameter += 40;
-      wateron = true;
-      waterfield.overlapping(enemies, waterfielddamagetoenemy);
-      waterfield.overlaps(experience);
-      waterfield.overlaps(fireballs);
-      player.overlaps(waterfield);
     }
     let buttons = selectAll("button");
     for (let i = 0; i < buttons.length; i++) {
@@ -317,10 +381,7 @@ function generateleveloptions() {
 
 function spawnenemy() {
   let enemy = new enemies.Sprite();
-  enemy.width = 3 * player.width / 4;
-  enemy.height = 3 * player.height / 4;
   enemy.life = 100 + Math.pow(time, 1.1);
-  enemy.color = "black";
   if (random(2) > 1) {
     if (random(2) > 1) {
       enemy.x = random(0, player.x + windowWidth / 2);
@@ -338,19 +399,13 @@ function spawnenemy() {
       enemy.y = random(0, player.y + windowHeight / 2);
     }
   }
-  enemy.rotateToDirection = true;
-  enemy.collides(player, damagetoplayer);
 }
 
 
 window.mousePressed = () => {
-    // let bullet = new bullets.Sprite(player.x + 10 * ((mouse.x + player.mouse.x - player.x) / Math.abs(mouse.x + player.mouse.x - player.x)), player.y + 10 * ((mouse.y + player.mouse.y - player.y) / Math.abs(mouse.y + player.mouse.y - player.y)), 10, 10);
     let bullet = new bullets.Sprite(player.x, player.y, 10, 10);
-    bullet.shapeColor = color("orange");
-    bullet.rotateToDirection = true;
     bullet.moveTowards(mouse.x + player.mouse.x, mouse.y + player.mouse.y);
     bullet.speed = 20;
-    bullet.collides(enemies, bulletdamagetoenemy);
 }
 
 window.draw = () => {
@@ -378,11 +433,14 @@ window.draw = () => {
       // fix so you cant run through
     }
     enemies[i].moveTo(player.x, player.y, 3 + time / 225);
+    enemies[i].life += 1;
     if (enemies[i].drag === -1) {
       enemies[i].moveTo(player.x, player.y, .15 * (5 + time / 225));
       enemies[i].drag = 0;
     }
-    enemies[i].life += 1;
+    if (enemies[i].drag === -2) {
+      enemies[i].moveTo(player.x, player.y, .25 * (5 + time / 225));
+    }
   }
   for (let i = 0; i < experience.length; i++) {
     if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
@@ -408,7 +466,7 @@ window.draw = () => {
 	}
   camera.x = player.x;
   camera.y = player.y;
-  textSize(15);
+  textSize(17);
   textAlign(CENTER);
   stroke(0);
   strokeWeight(1);
@@ -419,8 +477,13 @@ window.draw = () => {
   rect(windowWidth * 3 / 10, windowHeight * 1 / 10, map(level- Math.floor(level), 0, 1, 0, windowWidth * 4 / 10), windowHeight * 1 / 20);
   fill("black");
   text("Score:" + score, windowWidth - 100, windowHeight * 1 / 20);
+  let minutes = Math.floor(time / 60);
+  let extraSeconds = time % 60;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  extraSeconds = extraSeconds < 10 ? "0" + extraSeconds : extraSeconds;
+  text("Time:" + minutes + ":" + extraSeconds, 0 + 50, windowHeight * 1 / 20);
   text("Health:" + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 9 / 12, windowHeight * 2 / 15);
-  text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 10);
+  text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 11);
   if (rotatorson) {
     for (let i = 1; i < rotators.length + 1; i++) {
       let spacing = (i * 2 * Math.PI / rotators.length);
@@ -445,9 +508,8 @@ window.draw = () => {
   if (wateron) {
     waterfield.x = player.x;
     waterfield.y = player.y;
-    // player.text = waterfield.x;
   }
-  if (fireballon && framecounter % 200 === 0) {
+  if (fireballon && framecounter % 180 === 0) {
     for (let i = 0; i < fireballct; i++) {
       let fireball = new fireballs.Sprite();
       fireball.x = player.x;
@@ -460,10 +522,4 @@ window.draw = () => {
       }
     }
   }
-  // if (allSprites.length > 400) {
-  //   for (let i = 200; i < allSprites.length; i++) {
-  //     allSprites[i].remove();
-  //   }
-  //  determine when to clear the canvas of sprites
-  // }
 };
