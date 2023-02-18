@@ -35,9 +35,9 @@ let backgroundsounds;
 let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase Sun Orb Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
 
 function preload() {
-  testimage = loadAnimation("images/test");
+  // testimage = loadAnimation("images/test");
   // soundFormats("mp3");
-  // backgroundsounds = loadSound("music/background.mp3");
+  backgroundsounds = loadSound("music/background2.mp3");
 }
 // to do:
 // different color card based on powerup
@@ -67,10 +67,10 @@ window.setup = () => {
 };
 
 function backgroundmusic() {
-  // backgroundsounds.play();
-  // backgroundsounds.loop();
-  // backgroundsounds.setVolume(.5);
-  // userStartAudio();
+  backgroundsounds.play();
+  backgroundsounds.loop();
+  backgroundsounds.setVolume(.1);
+  userStartAudio();
 }
 
 function resetstats() {
