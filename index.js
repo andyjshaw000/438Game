@@ -1,3 +1,7 @@
+let bg;
+let x1 = 0;
+let y1 = 0;
+let x2;
 let player;
 let playerhealth;
 let score;
@@ -35,9 +39,9 @@ let backgroundsounds;
 let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase Sun Orb Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
 
 function preload() {
-  // testimage = loadAnimation("images/test");
+  // testimage = loadAnimation("images/test.png");
   // soundFormats("mp3");
-  backgroundsounds = loadSound("music/background2.mp3");
+  backgroundsounds = loadSound("music/background3.mp3");
 }
 // to do:
 // different color card based on powerup
@@ -48,6 +52,8 @@ function preload() {
 // tutorial with text content in middle and enemies dont spawn until 10 seconds in
 
 window.setup = () => {
+  x2 = windowWidth;
+  y2 = windowHeight;
   player = new Sprite(windowWidth / 2, windowHeight / 2, 25, 25);
   resetstats();
   groupinit();
@@ -64,6 +70,8 @@ window.setup = () => {
 	}
   overlapchecker();
   backgroundmusic();
+  let imagenumber = Math.ceil(random(9));
+  bg = loadImage("images/" + imagenumber + ".jpg");
 };
 
 function backgroundmusic() {
@@ -79,7 +87,7 @@ function resetstats() {
   score = 0;
   experiencepoints = 90;
   level = 1;
-  time = 290;
+  time = 0;
   framecounter = 0;
   PLAYERSPEED = 4;
   BULLETDAMAGE = 180;
@@ -409,6 +417,8 @@ window.mousePressed = () => {
 }
 
 window.draw = () => {
+  // player.x = constrain(player.x, -windowWidth, windowWidth);
+  // player.y = constrain(player.y, -windowHeight, windowHeight);
   // if (playerhealth < 1) {
   //   fill(255,0,0,120);
   //   rect(0, 0, windowWidth, windowHeight);
@@ -419,6 +429,43 @@ window.draw = () => {
   // }
   framecounter += 1;
   clear();
+  image(bg, x1, y1, windowWidth, windowHeight);
+  image(bg, x1, y1, -windowWidth, -windowHeight);
+  image(bg, x1, y1, windowWidth, -windowHeight);
+  image(bg, x1, y1, -windowWidth, windowHeight);
+  image(bg, x2, y2, windowWidth, windowHeight);
+  image(bg, x2, y2, -windowWidth, -windowHeight);
+  image(bg, x2, y2, windowWidth, -windowHeight);
+  image(bg, x2, y2, -windowWidth, windowHeight);
+  image(bg, x1, y2, windowWidth, windowHeight);
+  image(bg, x1, y2, -windowWidth, -windowHeight);
+  image(bg, x1, y2, windowWidth, -windowHeight);
+  image(bg, x1, y2, -windowWidth, windowHeight);
+  image(bg, x2, y1, windowWidth, windowHeight);
+  image(bg, x2, y1, -windowWidth, -windowHeight);
+  image(bg, x2, y1, windowWidth, -windowHeight);
+  image(bg, x2, y1, -windowWidth, windowHeight);
+  if (x1 < -windowWidth){
+    x1 = windowWidth;
+  } else if (x1 > windowWidth) {
+    x1 = -windowWidth;
+  }
+  if (x2 < -windowWidth){
+    x2 = windowWidth;
+  } else if (x2 > windowWidth) {
+    x2 = -windowWidth;
+  }
+  if (y1 < -windowHeight){
+    y1 = windowHeight;
+  } else if (y1 > windowHeight) {
+    y1 = -windowHeight;
+  }
+  if (y2 < -windowHeight){
+    y2 = windowHeight;
+  } else if (y2 > windowHeight) {
+    y2 = -windowHeight;
+  }
+
   if (framecounter % 150 === 0) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
@@ -449,20 +496,44 @@ window.draw = () => {
   }
   if (kb.pressing("down") && kb.pressing("left")) {
     player.move(PLAYERSPEED * 1.5, 135, PLAYERSPEED);
+    y1 -= PLAYERSPEED;
+    y2 -= PLAYERSPEED;
+    x1 += PLAYERSPEED;
+    x2 += PLAYERSPEED;
 	} else if (kb.pressing("down") && kb.pressing("right")) {
     player.move(PLAYERSPEED * 1.5, 45, PLAYERSPEED - 1);
+    y1 -= PLAYERSPEED;
+    y2 -= PLAYERSPEED;
+    x1 -= PLAYERSPEED;
+    x2 -= PLAYERSPEED;
 	} else if (kb.pressing("up") && kb.pressing("left")) {
     player.move(PLAYERSPEED * 1.5, 225, PLAYERSPEED - 1);
+    y1 += PLAYERSPEED;
+    y2 += PLAYERSPEED;
+    x1 += PLAYERSPEED;
+    x2 += PLAYERSPEED;
 	} else if (kb.pressing("up") && kb.pressing("right")) {
+    x1 -= PLAYERSPEED;
+    x2 -= PLAYERSPEED;
+    y1 += PLAYERSPEED;
+    y2 += PLAYERSPEED;
     player.move(PLAYERSPEED * 1.5, 315, PLAYERSPEED - 1);
 	} else if (kb.pressing("right")) {
+    x1 -= PLAYERSPEED;
+    x2 -= PLAYERSPEED;
 		player.move(PLAYERSPEED * 1.5, "right", PLAYERSPEED);
 	} else if (kb.pressing("left")) {
+    x1 += PLAYERSPEED;
+    x2 += PLAYERSPEED;
     player.move(PLAYERSPEED * 1.5, "left", PLAYERSPEED);
   } else if (kb.pressing("up")) {
+    y1 += PLAYERSPEED;
+    y2 += PLAYERSPEED;
     player.move(PLAYERSPEED * 1.5, "up", PLAYERSPEED);
 	} else if (kb.pressing("down")) {
     player.move(PLAYERSPEED * 1.5, "down", PLAYERSPEED);
+    y1 -= PLAYERSPEED;
+    y2 -= PLAYERSPEED;
 	}
   camera.x = player.x;
   camera.y = player.y;
