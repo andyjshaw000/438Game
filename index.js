@@ -2,6 +2,7 @@ let bg;
 let x1;
 let y1;
 let x2;
+let y2;
 let player;
 let playerhealth;
 let score;
@@ -761,7 +762,6 @@ window.draw = () => {
     waterfield.x = player.x;
     waterfield.y = player.y;
   }
-  // testimage.play();
   camera.x = player.x;
   camera.y = player.y;
   if (fireballon && framecounter % 180 === 0) {
@@ -791,7 +791,5 @@ window.draw = () => {
     fireballs.remove();
     clear();
     time += 1;
-    // draw();
   }
-
 };
