@@ -87,7 +87,7 @@ function preload() {
   sunimage = loadAnimation("images/sun.png");
   bombimage = loadAnimation("images/bomb.png");
   healthimage = loadAnimation("images/health.png");
-  experienceimage = loadAnimation("images/experience.png")
+  experienceimage = loadAnimation("images/experience.png");
   let musicnumber = Math.ceil(random(3));
   soundFormats("mp3");
   backgroundsounds = loadSound("music/background" + musicnumber + ".mp3");
@@ -761,7 +761,6 @@ window.draw = () => {
     waterfield.x = player.x;
     waterfield.y = player.y;
   }
-  // testimage.play();
   camera.x = player.x;
   camera.y = player.y;
   if (fireballon && framecounter % 180 === 0) {
@@ -791,7 +790,5 @@ window.draw = () => {
     fireballs.remove();
     clear();
     time += 1;
-    // draw();
   }
-
 };
