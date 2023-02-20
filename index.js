@@ -185,10 +185,10 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 170;
-  WATERFIELDDAMAGE = 2.85;
-  BOUNCERDAMAGE = 950;
-  ROTATORDAMAGE = 500;
+  FIREBALLDAMAGE = 200;
+  WATERFIELDDAMAGE = 4;
+  BOUNCERDAMAGE = 1150;
+  ROTATORDAMAGE = 570;
   BOUNCESPEED = 14;
 }
 
@@ -452,13 +452,13 @@ function generateleveloptions() {
         fireballon = true;
       }
       fireballct += 1;
-      FIREBALLDAMAGE += 15;
+      FIREBALLDAMAGE += 25;
       firelevelup.play();
       firelevelup.setVolume(.3);
     } else if (button.attribute === 1) {
       rotatorson = true;
       new rotators.Sprite();
-      ROTATORDAMAGE += 30;
+      ROTATORDAMAGE += 100;
       earthlevelup.play();
       earthlevelup.setVolume(.08);
     } else if (button.attribute === 2) {
@@ -487,12 +487,12 @@ function generateleveloptions() {
         bounceron = true;
       } else {
         BOUNCESPEED += 1;
-        BOUNCERDAMAGE += 50;
+        BOUNCERDAMAGE += 200;
       }
       airlevelup.play();
       airlevelup.setVolume(.25);
     } else if (button.attribute === 6) {
-      BULLETDAMAGE += 250;
+      BULLETDAMAGE += 300;
       sunlevelup.play();
       sunlevelup.setVolume(.15);
     } else if (button.attribute === 7) {
@@ -501,7 +501,7 @@ function generateleveloptions() {
         waterfield.visible = true;
         wateron = true;
       } else {
-        WATERFIELDDAMAGE += .35;
+        WATERFIELDDAMAGE += .8;
       }
       waterlevelup.play();
       waterlevelup.setVolume(.2);
@@ -550,7 +550,7 @@ window.mousePressed = () => {
     } else {
       player.ani = "leftattack";
     }
-}
+};
 
 window.draw = () => {
   if (Math.floor(playerhealth) <= 0) {
