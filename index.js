@@ -123,7 +123,7 @@ window.setup = () => {
   visualinit();
   timecounter();
   createCanvas(windowWidth, windowHeight);
-	while (experience.length < 100) {
+	while (experience.length < 30) {
     new experience.Sprite();
     experience.x = () => random(0, windowWidth);
     experience.y = () => random(0, windowHeight);
@@ -175,8 +175,8 @@ function resetstats() {
   time = 1;
   // time = 25;
   framecounter = 0;
-  PLAYERSPEED = 3.75;
-  BULLETDAMAGE = 180;
+  PLAYERSPEED = 3.25;
+  BULLETDAMAGE = 340;
   rotatorson = false;
   bounceron = false;
   xdirection = 1;
@@ -185,10 +185,10 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 140;
-  WATERFIELDDAMAGE = 2.75;
-  BOUNCERDAMAGE = 650;
-  ROTATORDAMAGE = 550;
+  FIREBALLDAMAGE = 170;
+  WATERFIELDDAMAGE = 2.85;
+  BOUNCERDAMAGE = 950;
+  ROTATORDAMAGE = 500;
   BOUNCESPEED = 14;
 }
 
@@ -205,34 +205,34 @@ function groupinit() {
 }
 
 function physicsinit() {
-  bullets.shapeColor = color("orange");
-  bullets.rotateToDirection = true;
-  player.color = "yellow";
-  bombs.color = "black";
+  // bullets.shapeColor = color("orange");
+  // bullets.rotateToDirection = true;
+  // player.color = "yellow";
+  // bombs.color = "black";
   bombs.diameter = 20;
-  rotators.color = "brown";
+  // rotators.color = "brown";
   rotators.diameter = 60;
-  healths.color = "orange";
+  // healths.color = "orange";
   healths.diameter = 30;
-  fireballs.color = "red"
+  // fireballs.color = "red"
   fireballs.diameter = 80;
-	experience.color = "lightgreen";
-	experience.diameter = 8;
+	// experience.color = "lightgreen";
+	experience.diameter = 10;
   player.collider = "kinematic";
   player.rotationLock = true;
-  player.bounciness = 0.001;
-  enemies.mass = 0;
-  bouncer.isSuperFast = true;
+  // player.bounciness = 0.001;
+  // enemies.mass = 0;
+  // bouncer.isSuperFast = true;
   bouncer.friction = 0;
   bouncer.x = player.x;
   bouncer.y = player.y;
-  bouncer.color = "purple";
+  // bouncer.color = "purple";
   bouncer.diameter = 55;
   waterfield.diameter = 180;
-  waterfield.color = color(0,0,240,67);
-  enemies.width = 3 * player.width / 4;
-  enemies.height = 3 * player.height / 4;
-  enemies.color = "black";
+  // waterfield.color = color(0,0,240,67);
+  enemies.width = 15;
+  enemies.height = 30;
+  // enemies.color = "black";
   enemies.rotationLock = true;
 }
 
@@ -330,7 +330,7 @@ function healthcollect(player, health) {
 }
 
 function damagetoplayer(player) {
-  playerhealth -= RESISTANCE * time / 300;
+  playerhealth -= RESISTANCE * time / 700;
   fill(255, 0, 0, 25);
   rect(0, 0, windowWidth, windowHeight);
 }
@@ -372,13 +372,13 @@ function bombdamagetoenemy(weapon, enemy) {
 
 function enemykilledupdate(enemy) {
   if (enemy.life <= 0) {
-    // if (random(10) > 2) {
-    new experience.Sprite(enemy.x, enemy.y);
-    // }
-    if (random(1000) > 998) {
+    if (random(10) > 5) {
+      new experience.Sprite(enemy.x, enemy.y);
+    }
+    if (random(1000) > 998.5) {
       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
     }
-    if (random(1000) > 997.5) {
+    if (random(1000) > 998.25) {
       new healths.Sprite(enemy.x + 10, enemy.y - 10);
     }
     enemy.remove();
@@ -392,7 +392,7 @@ function checklevel() {
   } else {
     level = Math.pow(experiencepoints, 1/1.7);
   }
-  if (experiencepoints % 50 === 0 && experiencepoints < 268 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
+  if (experiencepoints % 30 === 0 && experiencepoints < 240 || experiencepoints === 250 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
     draw();
     selectability.play();
     selectability.setVolume(.1);
@@ -518,7 +518,7 @@ function generateleveloptions() {
 
 function spawnenemy() {
   let enemy = new enemies.Sprite();
-  enemy.life = 100 + Math.pow(time, 1.2);
+  enemy.life = 100 + Math.pow(time, 1.25);
   if (random(2) > 1) {
     if (random(2) > 1) {
       enemy.x = random(0, player.x + windowWidth / 2);
@@ -553,7 +553,7 @@ window.mousePressed = () => {
 }
 
 window.draw = () => {
-  if (playerhealth <= 0) {
+  if (Math.floor(playerhealth) <= 0) {
     backgroundsounds.setVolume(.005);
     losesound.play();
     losesound.setVolume(.3);
@@ -610,8 +610,8 @@ window.draw = () => {
   }
 
   if (framecounter % 150 === 0 && time > 24) {
-    for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
-      if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
+    for (let i = 0; i < 2.5 * time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
+      if (enemies.length < Math.pow(windowWidth, 2) / 15000) {
         spawnenemy();
       }
     }
@@ -619,10 +619,12 @@ window.draw = () => {
   for (let i = 0; i < enemies.length; i++) {
     if (enemies[i].x > player.x + 2 * windowWidth / 3 || enemies[i].y > player.y + 2 * windowHeight / 3 || enemies[i].x < player.x - 2 * windowWidth / 3 || enemies[i].y < player.y - 2 * windowHeight / 3) {
       enemies[i].remove();
-      spawnenemy();
+      if (enemies.length < Math.pow(windowWidth, 2) / 15000) {
+        spawnenemy();
+      }
       // fix so you cant run through
     }
-    enemies[i].moveTo(player.x, player.y, 3.5 + time / 200);
+    enemies[i].moveTo(player.x, player.y, 2.5 + time / 400);
     if (enemies[i].x < player.x) {
       enemies[i].ani = "enemyimage2";
     } else {
@@ -630,16 +632,20 @@ window.draw = () => {
     }
     enemies[i].life += 1;
     if (enemies[i].drag === -1) {
-      enemies[i].moveTo(player.x, player.y, .25 * (3.5 + time / 200));
+      enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 400));
       enemies[i].drag = 0;
     }
     if (enemies[i].drag === -2) {
-      enemies[i].moveTo(player.x, player.y, .75 * (3.5 + time / 200));
+      enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 400));
     }
   }
   for (let i = 0; i < experience.length; i++) {
     if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
       experience[i].remove();
+    }
+    if (experience[i].life <= 99997300) {
+      experience[i].remove();
+      experiencepoints += 1;
     }
   }
   if (kb.pressing("down") && kb.pressing("left")) {
@@ -789,7 +795,7 @@ window.draw = () => {
     healths.remove();
     bullets.remove();
     fireballs.remove();
-    clear();
+    // clear();
     time += 1;
   }
 };
