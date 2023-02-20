@@ -67,6 +67,45 @@ let rightattack;
 let leftattack;
 let losesound;
 let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you. Enemies hit are permanently slowed."], 2:["Increase Speed", "Move faster to dodge and weave past enemies."], 3:["Increase Health", "More health makes you able to take more damage for longer."], 4:["Increase Defense", "Bolster your armor and take less damage from enemies."], 5:["Power up your Airball", "Enemies won't know when it's coming, but when it does, it's too late."], 6:["Increase Sun Orb Damage", "Shadows try to avoid the sun as much as possible, as it does massive damage."], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool that slows enemies in the tide."]};
+
+function preload() {
+  standleft = loadAnimation("images/left1.png");
+  standright = loadAnimation("images/right1.png");
+  leftattack = loadAnimation("images/leftattack.png");
+  rightattack = loadAnimation("images/rightattack.png");
+  testimage = loadAnimation("images/right2.png", 3);
+  testimage.frameDelay = 12;
+  test2image = loadAnimation("images/left2.png", 3);
+  test2image.frameDelay = 12;
+  enemyimage2 = loadAnimation("images/enemy2.png");
+  enemyimage = loadAnimation("images/enemy.png");
+  fireimage = loadAnimation("images/fire.png");
+  waterimage = loadAnimation("images/water1.png", 9);
+  waterimage.frameDelay = 8;
+  airimage = loadAnimation("images/air.png");
+  earthimage = loadAnimation("images/earth.png");
+  sunimage = loadAnimation("images/sun.png");
+  bombimage = loadAnimation("images/bomb.png");
+  healthimage = loadAnimation("images/health.png");
+  experienceimage = loadAnimation("images/experience.png");
+  let musicnumber = Math.ceil(random(3));
+  soundFormats("mp3");
+  backgroundsounds = loadSound("music/background" + musicnumber + ".mp3");
+  losesound = loadSound("music/lose");
+  bombsound = loadSound("music/bomb");
+  healthsound = loadSound("music/health");
+  // experiencesound = loadSound("music/experience");
+  selectability = loadSound("music/selectability");
+  // sun = loadSound("music/sunorb");
+  waterlevelup = loadSound("music/water");
+  firelevelup = loadSound("music/fireballs");
+  airlevelup = loadSound("music/air");
+  earthlevelup = loadSound("music/earth");
+  speedlevelup = loadSound("music/speed");
+  healthlevelup = loadSound("music/healthincrease");
+  defenselevelup = loadSound("music/defense");
+  sunlevelup = loadSound("music/sun");
+}
 // to do:
 // portfolio
 // add boss levels
