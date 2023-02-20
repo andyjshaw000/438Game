@@ -2,6 +2,7 @@ let bg;
 let x1;
 let y1;
 let x2;
+let y2;
 let player;
 let playerhealth;
 let score;

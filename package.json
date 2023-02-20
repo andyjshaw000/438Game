@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@web/dev-server": "^0.1.35",
+    "eslint": "^8.34.0",
     "gh-pages": "^5.0.0",
     "rollup": "^2.79.1",
     "rollup-plugin-copy": "^3.4.0"
