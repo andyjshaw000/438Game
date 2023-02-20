@@ -1,5 +1,5 @@
 {
-  "name": "game",
+  "name": "Sun Game",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -24,7 +24,6 @@
     "p5.play": "^3.5.20"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.0.1",
     "@web/dev-server": "^0.1.35",
     "gh-pages": "^5.0.0",
     "rollup": "^2.79.1",
