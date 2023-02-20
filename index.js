@@ -1,6 +1,6 @@
 let bg;
-let x1 = 0;
-let y1 = 0;
+let x1;
+let y1;
 let x2;
 let player;
 let playerhealth;
@@ -35,61 +35,146 @@ let WATERFIELDDAMAGE;
 let BOUNCERDAMAGE;
 let ROTATORDAMAGE;
 let backgroundsounds;
-// let testimage;
-let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you"], 2:["Increase Speed", "Move faster to dodge and weave past enemies"], 3:["Increase Health", "More health makes you able to take more damage for longer"], 4:["Increase Defense", "Take less damage from enemies"], 5:["Power up your Airball", "Enemies won't know when it's coming, but it always comes back"], 6:["Increase Sun Orb Damage", "Shadows really don't like the sun"], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool"]};
+let bombsound;
+let healthsound;
+let experiencesound;
+let sun;
+let selectability;
+let sunlevelup;
+let waterlevelup;
+let firelevelup;
+let airlevelup;
+let earthlevelup;
+let speedlevelup;
+let healthlevelup;
+let defenselevelup;
+let testimage;
+let test2image;
+let enemyimage;
+let enemyimage2;
+let fireimage;
+let waterimage;
+let airimage;
+let earthimage;
+let sunimage;
+let bombimage;
+let healthimage;
+let experienceimage;
+let standleft;
+let standright;
+let facing;
+let rightattack;
+let leftattack;
+let losesound;
+let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you. Enemies hit are permanently slowed."], 2:["Increase Speed", "Move faster to dodge and weave past enemies."], 3:["Increase Health", "More health makes you able to take more damage for longer."], 4:["Increase Defense", "Bolster your armpr amd take less damage from enemies."], 5:["Power up your Airball", "Enemies won't know when it's coming, but when it does, it's too late."], 6:["Increase Sun Orb Damage", "Shadows try to avoid the sun as much as possible, as it does massive damage."], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool that slows enemies in the tide."]};
 
 function preload() {
-  // testimage = loadAnimation("images/test.png");
-  // soundFormats("mp3");
-  backgroundsounds = loadSound("music/background3.mp3");
+  standleft = loadAnimation("images/left1.png");
+  standright = loadAnimation("images/right1.png");
+  leftattack = loadAnimation("images/leftattack.png");
+  rightattack = loadAnimation("images/rightattack.png");
+  testimage = loadAnimation("images/right2.png", 3);
+  testimage.frameDelay = 8;
+  test2image = loadAnimation("images/left2.png", 3);
+  test2image.frameDelay = 8;
+  enemyimage2 = loadAnimation("images/enemy2.png");
+  enemyimage = loadAnimation("images/enemy.png");
+  fireimage = loadAnimation("images/fire.png");
+  waterimage = loadAnimation("images/water1.png", 9);
+  waterimage.frameDelay = 8;
+  airimage = loadAnimation("images/air.png");
+  earthimage = loadAnimation("images/earth.png");
+  sunimage = loadAnimation("images/sun.png");
+  bombimage = loadAnimation("images/bomb.png");
+  healthimage = loadAnimation("images/health.png");
+  experienceimage = loadAnimation("images/experience.png")
+  let musicnumber = Math.ceil(random(3));
+  soundFormats("mp3");
+  backgroundsounds = loadSound("music/background" + musicnumber + ".mp3");
+  losesound = loadSound("music/lose");
+  bombsound = loadSound("music/bomb");
+  healthsound = loadSound("music/health");
+  experiencesound = loadSound("music/experience");
+  selectability = loadSound("music/selectability");
+  sun = loadSound("music/sunorb");
+  waterlevelup = loadSound("music/water");
+  firelevelup = loadSound("music/fireballs");
+  airlevelup = loadSound("music/air");
+  earthlevelup = loadSound("music/earth");
+  speedlevelup = loadSound("music/speed");
+  healthlevelup = loadSound("music/healthincrease");
+  defenselevelup = loadSound("music/defense");
+  sunlevelup = loadSound("music/sun");
 }
 // to do:
 // different color card based on powerup
-// animations + visual improvements + sound (health, experience, font, background, music, enemies, player, weapon)
-// clean up code (fix enemy spawn when running one direction, bouncing character makes them faster than their speed)
-// make a game over
-// make a menu
 // tutorial with text content in middle and enemies dont spawn until 10 seconds in
+// portfolio
+// add boss levels
+// add sword damage
 
 window.setup = () => {
-  x2 = windowWidth;
-  y2 = windowHeight;
-  player = new Sprite(windowWidth / 2, windowHeight / 2, 25, 25);
+  waterfield = new Sprite();
+  waterfield.visible = false;
+  // had to ungroup, hide it, and make a new sprite to make it under the player
+  player = new Sprite(windowWidth / 2, windowHeight / 2, 20, 40);
   resetstats();
   groupinit();
   physicsinit();
-  // player.addAnimation("testimage", testimage);
-  // visualinit();
+  visualinit();
   timecounter();
   createCanvas(windowWidth, windowHeight);
-	while (experience.length < 400) {
-    // spawn less in beginning
+	while (experience.length < 100) {
     new experience.Sprite();
     experience.x = () => random(0, windowWidth);
     experience.y = () => random(0, windowHeight);
 	}
   overlapchecker();
   backgroundmusic();
-  let imagenumber = Math.ceil(random(9));
-  bg = loadImage("images/" + imagenumber + ".jpg");
+  let imagenumber = Math.ceil(random(5));
+  bg = loadImage("images/" + imagenumber + "-min.jpg");
 };
 
 function backgroundmusic() {
   backgroundsounds.play();
   backgroundsounds.loop();
-  backgroundsounds.setVolume(.1);
+  backgroundsounds.setVolume(.02);
   userStartAudio();
 }
 
+function visualinit() {
+  enemies.addAnimation("enemyimage", enemyimage);
+  enemies.addAnimation("enemyimage2", enemyimage2);
+  waterfield.addAnimation("waterimage", waterimage);
+  player.addAnimation("rightattack", rightattack);
+	player.addAnimation("leftattack", leftattack);
+  player.addAnimation("right", testimage);
+	player.addAnimation("left", test2image);
+  player.addAnimation("standright", standright);
+	player.addAnimation("standleft", standleft);
+  bouncer.addAnimation("airimage", airimage);
+  rotators.addAnimation("earthimage", earthimage);
+  fireballs.addAnimation("fireimage", fireimage);
+  bullets.addAnimation("sunimage", sunimage);
+  healths.addAnimation("healthimage", healthimage);
+  bombs.addAnimation("bombimage", bombimage);
+  experience.addAnimation("experienceimage", experienceimage);
+}
+
 function resetstats() {
+  facing = "right";
+  x1 = 0;
+  y1 = 0;
+  x2 = windowWidth;
+  y2 = windowHeight;
   playerhealth = 100;
   PLAYERMAXHEALTH = 100;
   score = 0;
-  experiencepoints = 90;
-  level = 1;
-  time = 0;
+  experiencepoints = 10;
+  level = 0;
+  time = 1;
   framecounter = 0;
-  PLAYERSPEED = 4;
+  PLAYERSPEED = 3.75;
   BULLETDAMAGE = 180;
   rotatorson = false;
   bounceron = false;
@@ -112,7 +197,7 @@ function groupinit() {
   healths = new Group();
   bullets = new Group();
   bouncer = new Group();
-  waterfield = new Group();
+  // waterfield = new Group();
   enemies = new Group();
 	experience = new Group();
   fireballs = new Group();
@@ -147,11 +232,10 @@ function physicsinit() {
   enemies.width = 3 * player.width / 4;
   enemies.height = 3 * player.height / 4;
   enemies.color = "black";
-  enemies.rotateToDirection = true;
+  enemies.rotationLock = true;
 }
 
 function overlapchecker() {
-  let sprites = [player, experience, enemies, bullets, bombs, healths, rotators, bouncer, waterfield, fireballs];
   player.overlaps(experience, experiencecollect);
   enemies.collides(player, damagetoplayer);
   player.overlaps(bullets);
@@ -218,16 +302,19 @@ function timecounter() {
   setInterval(function() {
     time += 1;
   }, 1000);
-  // time = 300;
 }
 
 function experiencecollect(player, experience) {
+  experiencesound.play();
+  experiencesound.setVolume(.05);
   experience.remove();
   experiencepoints += 1;
   checklevel();
 }
 
 function bombcollect(player, bomb) {
+  bombsound.play();
+  bombsound.setVolume(.25);
   bomb.remove();
   for (let i = 0; i < enemies.length; i++) {
     bombdamagetoenemy(bomb, enemies[i]);
@@ -235,13 +322,15 @@ function bombcollect(player, bomb) {
 }
 
 function healthcollect(player, health) {
+  healthsound.play();
+  healthsound.setVolume(.25);
   health.remove();
   playerhealth = PLAYERMAXHEALTH;
 }
 
 function damagetoplayer(player) {
   playerhealth -= RESISTANCE * time / 300;
-  fill(255,0,0,30);
+  fill(255, 0, 0, 25);
   rect(0, 0, windowWidth, windowHeight);
 }
 
@@ -281,10 +370,10 @@ function bombdamagetoenemy(weapon, enemy) {
 }
 
 function enemykilledupdate(enemy) {
-  if (enemy.life < 1) {
-    if (random(10) > 2) {
-      new experience.Sprite(enemy.x, enemy.y);
-    }
+  if (enemy.life <= 0) {
+    // if (random(10) > 2) {
+    new experience.Sprite(enemy.x, enemy.y);
+    // }
     if (random(1000) > 998) {
       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
     }
@@ -292,7 +381,7 @@ function enemykilledupdate(enemy) {
       new healths.Sprite(enemy.x + 10, enemy.y - 10);
     }
     enemy.remove();
-    score += 100 + 5 * time;
+    score += 100 + time;
   }
 }
 
@@ -303,6 +392,9 @@ function checklevel() {
     level = Math.pow(experiencepoints, 1/1.7);
   }
   if (experiencepoints % 50 === 0 && experiencepoints < 268 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
+    draw();
+    selectability.play();
+    selectability.setVolume(.1);
     generateleveloptions();
   }
 }
@@ -341,16 +433,24 @@ function generateleveloptions() {
       }
       fireballct += 1;
       FIREBALLDAMAGE += 15;
+      firelevelup.play();
+      firelevelup.setVolume(.3);
     } else if (button.attribute === 1) {
       rotatorson = true;
       new rotators.Sprite();
       ROTATORDAMAGE += 30;
+      earthlevelup.play();
+      earthlevelup.setVolume(.08);
     } else if (button.attribute === 2) {
-      PLAYERSPEED += 1;
+      PLAYERSPEED += .25;
+      speedlevelup.play();
+      speedlevelup.setVolume(.2);
     } else if (button.attribute === 3) {
       let healthgained = PLAYERMAXHEALTH;
       PLAYERMAXHEALTH += healthgained;
       playerhealth += healthgained;
+      healthlevelup.play();
+      healthlevelup.setVolume(.3);
     } else if (button.attribute === 4) {
       if (RESISTANCE > .5) {
         RESISTANCE -= .2;
@@ -359,6 +459,8 @@ function generateleveloptions() {
       } else {
         RESISTANCE = .01;
       }
+      defenselevelup.play();
+      defenselevelup.setVolume(.2);
     } else if (button.attribute === 5) {
       if (!bounceron) {
         new bouncer.Sprite();
@@ -367,15 +469,22 @@ function generateleveloptions() {
         BOUNCESPEED += 1;
         BOUNCERDAMAGE += 50;
       }
+      airlevelup.play();
+      airlevelup.setVolume(.25);
     } else if (button.attribute === 6) {
-      BULLETDAMAGE += 220;
+      BULLETDAMAGE += 250;
+      sunlevelup.play();
+      sunlevelup.setVolume(.15);
     } else if (button.attribute === 7) {
       if (!wateron) {
-        new waterfield.Sprite();
+        // new waterfield.Sprite();
+        waterfield.visible = true;
         wateron = true;
       } else {
-        waterfield.diameter += 50;
+        WATERFIELDDAMAGE += .35;
       }
+      waterlevelup.play();
+      waterlevelup.setVolume(.2);
     }
     let buttons = selectAll("button");
     for (let i = 0; i < buttons.length; i++) {
@@ -389,7 +498,7 @@ function generateleveloptions() {
 
 function spawnenemy() {
   let enemy = new enemies.Sprite();
-  enemy.life = 100 + Math.pow(time, 1.1);
+  enemy.life = 100 + Math.pow(time, 1.2);
   if (random(2) > 1) {
     if (random(2) > 1) {
       enemy.x = random(0, player.x + windowWidth / 2);
@@ -411,40 +520,51 @@ function spawnenemy() {
 
 
 window.mousePressed = () => {
-    let bullet = new bullets.Sprite(player.x, player.y, 10, 10);
+    sun.play();
+    sun.setVolume(.2);
+    let bullet = new bullets.Sprite(player.x, player.y, 15, 15);
     bullet.moveTowards(mouse.x + player.mouse.x, mouse.y + player.mouse.y);
     bullet.speed = 20;
+    if (facing === "right") {
+      player.ani = "rightattack";
+    } else {
+      player.ani = "leftattack";
+    }
 }
 
 window.draw = () => {
-  // player.x = constrain(player.x, -windowWidth, windowWidth);
-  // player.y = constrain(player.y, -windowHeight, windowHeight);
-  // if (playerhealth < 1) {
-  //   fill(255,0,0,120);
-  //   rect(0, 0, windowWidth, windowHeight);
-  //   // fill(255, 255, 255);
-  //   // rect(windowWidth * 3 / 10, windowHeight * 1 / 10, windowWidth * 4 / 10, windowHeight * 8 / 10);
-  //   text("Score:" + score, windowWidth / 2, windowHeight / 2);
-  //   noLoop();
-  // }
+  if (playerhealth <= 0) {
+    backgroundsounds.setVolume(.005);
+    losesound.play();
+    losesound.setVolume(.3);
+    fill(0, 0, 0, 180);
+    rect(0, 0, windowWidth, windowHeight);
+    let buttonback = createButton("Game over.\nThe shadows have taken over.");
+    buttonback.style("border-radius", "15px");
+    buttonback.style("background-image", "radial-gradient(red 21%, black 80%)");
+    buttonback.style("color", "white");
+    buttonback.style("border", "none");
+    buttonback.style("font-size", "30px");
+    buttonback.size(windowWidth / 2, 2 * windowHeight / 3);
+    buttonback.position(windowWidth / 6 + 2 / 24 * windowWidth, 1 * windowHeight / 5);
+    let button = createButton("Score: " + score);
+    button.style("background-color", "black");
+    button.style("color", "white");
+    button.style("border", "none");
+    button.size(windowWidth / 10, windowHeight / 15);
+    button.position(windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5 - 20);
+    noLoop();
+  }
   framecounter += 1;
   clear();
-  image(bg, x1, y1, windowWidth, windowHeight);
-  image(bg, x1, y1, -windowWidth, -windowHeight);
-  image(bg, x1, y1, windowWidth, -windowHeight);
-  image(bg, x1, y1, -windowWidth, windowHeight);
-  image(bg, x2, y2, windowWidth, windowHeight);
-  image(bg, x2, y2, -windowWidth, -windowHeight);
-  image(bg, x2, y2, windowWidth, -windowHeight);
-  image(bg, x2, y2, -windowWidth, windowHeight);
-  image(bg, x1, y2, windowWidth, windowHeight);
-  image(bg, x1, y2, -windowWidth, -windowHeight);
-  image(bg, x1, y2, windowWidth, -windowHeight);
-  image(bg, x1, y2, -windowWidth, windowHeight);
-  image(bg, x2, y1, windowWidth, windowHeight);
-  image(bg, x2, y1, -windowWidth, -windowHeight);
-  image(bg, x2, y1, windowWidth, -windowHeight);
-  image(bg, x2, y1, -windowWidth, windowHeight);
+  image(bg, x1, y1, windowWidth + 8, windowHeight + 8);
+  image(bg, x2, y2, windowWidth + 8, windowHeight + 8);
+  image(bg, x1, y2, windowWidth + 8, windowHeight + 8);
+  image(bg, x2, y1, windowWidth + 8, windowHeight + 8);
+  if (time > 25) {
+    fill(255, 255, 255, 40);
+    rect(0, 0, windowWidth, windowHeight);
+  }
   if (x1 < -windowWidth){
     x1 = windowWidth;
   } else if (x1 > windowWidth) {
@@ -479,14 +599,19 @@ window.draw = () => {
       spawnenemy();
       // fix so you cant run through
     }
-    enemies[i].moveTo(player.x, player.y, 3 + time / 225);
+    enemies[i].moveTo(player.x, player.y, 3.5 + time / 200);
+    if (enemies[i].x < player.x) {
+      enemies[i].ani = "enemyimage2";
+    } else {
+      enemies[i].ani = "enemyimage";
+    }
     enemies[i].life += 1;
     if (enemies[i].drag === -1) {
-      enemies[i].moveTo(player.x, player.y, .15 * (5 + time / 225));
+      enemies[i].moveTo(player.x, player.y, .25 * (3.5 + time / 200));
       enemies[i].drag = 0;
     }
     if (enemies[i].drag === -2) {
-      enemies[i].moveTo(player.x, player.y, .25 * (5 + time / 225));
+      enemies[i].moveTo(player.x, player.y, .75 * (3.5 + time / 200));
     }
   }
   for (let i = 0; i < experience.length; i++) {
@@ -495,34 +620,46 @@ window.draw = () => {
     }
   }
   if (kb.pressing("down") && kb.pressing("left")) {
+    player.ani = "left";
+    facing = "left";
     player.move(PLAYERSPEED * 1.5, 135, PLAYERSPEED);
-    y1 -= PLAYERSPEED;
-    y2 -= PLAYERSPEED;
-    x1 += PLAYERSPEED;
-    x2 += PLAYERSPEED;
+    y1 -= PLAYERSPEED - 1;
+    y2 -= PLAYERSPEED - 1;
+    x1 += PLAYERSPEED - 1;
+    x2 += PLAYERSPEED - 1;
 	} else if (kb.pressing("down") && kb.pressing("right")) {
+    player.ani = "right";
+    facing = "right";
     player.move(PLAYERSPEED * 1.5, 45, PLAYERSPEED - 1);
-    y1 -= PLAYERSPEED;
-    y2 -= PLAYERSPEED;
-    x1 -= PLAYERSPEED;
-    x2 -= PLAYERSPEED;
+    y1 -= PLAYERSPEED - 1;
+    y2 -= PLAYERSPEED - 1;
+    x1 -= PLAYERSPEED - 1;
+    x2 -= PLAYERSPEED - 1;
 	} else if (kb.pressing("up") && kb.pressing("left")) {
+    player.ani = "left";
+    facing = "left";
     player.move(PLAYERSPEED * 1.5, 225, PLAYERSPEED - 1);
-    y1 += PLAYERSPEED;
-    y2 += PLAYERSPEED;
-    x1 += PLAYERSPEED;
-    x2 += PLAYERSPEED;
+    y1 += PLAYERSPEED - 1;
+    y2 += PLAYERSPEED - 1;
+    x1 += PLAYERSPEED - 1;
+    x2 += PLAYERSPEED - 1;
 	} else if (kb.pressing("up") && kb.pressing("right")) {
-    x1 -= PLAYERSPEED;
-    x2 -= PLAYERSPEED;
-    y1 += PLAYERSPEED;
-    y2 += PLAYERSPEED;
+    player.ani = "right";
+    facing = "right";
+    x1 -= PLAYERSPEED - 1;
+    x2 -= PLAYERSPEED - 1;
+    y1 += PLAYERSPEED - 1;
+    y2 += PLAYERSPEED - 1;
     player.move(PLAYERSPEED * 1.5, 315, PLAYERSPEED - 1);
 	} else if (kb.pressing("right")) {
+    player.ani = "right";
+    facing = "right";
     x1 -= PLAYERSPEED;
     x2 -= PLAYERSPEED;
 		player.move(PLAYERSPEED * 1.5, "right", PLAYERSPEED);
 	} else if (kb.pressing("left")) {
+    player.ani = "left";
+    facing = "left";
     x1 += PLAYERSPEED;
     x2 += PLAYERSPEED;
     player.move(PLAYERSPEED * 1.5, "left", PLAYERSPEED);
@@ -534,9 +671,21 @@ window.draw = () => {
     player.move(PLAYERSPEED * 1.5, "down", PLAYERSPEED);
     y1 -= PLAYERSPEED;
     y2 -= PLAYERSPEED;
-	}
-  camera.x = player.x;
-  camera.y = player.y;
+	} else {
+    if (facing === "right") {
+      player.ani = "standright";
+    } else {
+      player.ani = "standleft";
+    }
+  }
+  if (time <= 25) {
+    let texttutorial = ["Fight against the shadow warriors who are growing stronger and plotting to attack the Sun.", "Use your sun orbs and abilities to defeat them and protect the Sun.",
+        "Be careful not to get near the shadow warriors.", "Move around and dodge their necrotic attacks.",
+        "As you defeat more shadows, they'll drop sun souls.", "Use these to level up and become stronger.",
+        "Every 5th level, you'll have the option to hone your powers.", "Choose wisely...",
+        "Keep defeating enemies and leveling up to save the Sun from danger. Good luck!"];
+    text(texttutorial[Math.floor(time / 2.75)], windowWidth / 2, 150);
+  }
   textSize(17);
   textAlign(CENTER);
   stroke(0);
@@ -547,14 +696,17 @@ window.draw = () => {
   fill("green");
   rect(windowWidth * 3 / 10, windowHeight * 1 / 10, map(level- Math.floor(level), 0, 1, 0, windowWidth * 4 / 10), windowHeight * 1 / 20);
   fill("black");
-  text("Score:" + score, windowWidth - 100, windowHeight * 1 / 20);
+  textFont("Courier New");
+  text("Score: " + score, windowWidth - 140, windowHeight * 1 / 20);
   let minutes = Math.floor(time / 60);
   let extraSeconds = time % 60;
   minutes = minutes < 10 ? "0" + minutes : minutes;
   extraSeconds = extraSeconds < 10 ? "0" + extraSeconds : extraSeconds;
-  text("Time:" + minutes + ":" + extraSeconds, 0 + 50, windowHeight * 1 / 20);
-  text("Health:" + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 9 / 12, windowHeight * 2 / 15);
-  text("Level:" + Math.floor(level), windowWidth / 2, windowHeight * 1 / 11);
+  text("Time: " + minutes + ":" + extraSeconds, 0 + 80, windowHeight * 1 / 20);
+  text("Health: " + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 10 / 13, windowHeight * 2 / 15);
+  textSize(20);
+  textFont("Arial");
+  text("Level: " + Math.floor(level), windowWidth / 2, windowHeight * 1 / 11);
   if (rotatorson) {
     for (let i = 1; i < rotators.length + 1; i++) {
       let spacing = (i * 2 * Math.PI / rotators.length);
@@ -580,17 +732,37 @@ window.draw = () => {
     waterfield.x = player.x;
     waterfield.y = player.y;
   }
+  testimage.play();
+  camera.x = player.x;
+  camera.y = player.y;
   if (fireballon && framecounter % 180 === 0) {
     for (let i = 0; i < fireballct; i++) {
       let fireball = new fireballs.Sprite();
       fireball.x = player.x;
       fireball.y = player.y;
       fireball.speed = 40;
-      let spacing = (i * 2 * Math.PI / fireballct);
+      let spacing = (i * 2 * Math.PI / fireballct) + Math.PI / 2;
       fireball.moveTowards(player.x + 200 * Math.cos(spacing), player.y + 200 * Math.sin(spacing));
       if (fireballs[i].x > player.x + 2 * windowWidth / 3 || fireballs[i].y > player.y + 2 * windowHeight / 3 || fireballs[i].x < player.x - 2 * windowWidth / 3 || fireballs[i].y < player.y - 2 * windowHeight / 3) {
         fireballs[i].remove();
       }
     }
+    if (facing === "right") {
+      player.ani = "rightattack";
+    } else {
+      player.ani = "leftattack";
+    }
   }
+  if (time % 180 === 0) {
+    enemies.remove();
+    experience.remove();
+    bombs.remove();
+    healths.remove();
+    bullets.remove();
+    fireballs.remove();
+    clear();
+    time += 1;
+    // draw();
+  }
+
 };
