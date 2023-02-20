@@ -37,8 +37,8 @@ let ROTATORDAMAGE;
 let backgroundsounds;
 let bombsound;
 let healthsound;
-let experiencesound;
-let sun;
+// let experiencesound;
+// let sun;
 let selectability;
 let sunlevelup;
 let waterlevelup;
@@ -66,7 +66,7 @@ let facing;
 let rightattack;
 let leftattack;
 let losesound;
-let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you. Enemies hit are permanently slowed."], 2:["Increase Speed", "Move faster to dodge and weave past enemies."], 3:["Increase Health", "More health makes you able to take more damage for longer."], 4:["Increase Defense", "Bolster your armpr amd take less damage from enemies."], 5:["Power up your Airball", "Enemies won't know when it's coming, but when it does, it's too late."], 6:["Increase Sun Orb Damage", "Shadows try to avoid the sun as much as possible, as it does massive damage."], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool that slows enemies in the tide."]};
+let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you. Enemies hit are permanently slowed."], 2:["Increase Speed", "Move faster to dodge and weave past enemies."], 3:["Increase Health", "More health makes you able to take more damage for longer."], 4:["Increase Defense", "Bolster your armor and take less damage from enemies."], 5:["Power up your Airball", "Enemies won't know when it's coming, but when it does, it's too late."], 6:["Increase Sun Orb Damage", "Shadows try to avoid the sun as much as possible, as it does massive damage."], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool that slows enemies in the tide."]};
 
 function preload() {
   standleft = loadAnimation("images/left1.png");
@@ -74,9 +74,9 @@ function preload() {
   leftattack = loadAnimation("images/leftattack.png");
   rightattack = loadAnimation("images/rightattack.png");
   testimage = loadAnimation("images/right2.png", 3);
-  testimage.frameDelay = 8;
+  testimage.frameDelay = 12;
   test2image = loadAnimation("images/left2.png", 3);
-  test2image.frameDelay = 8;
+  test2image.frameDelay = 12;
   enemyimage2 = loadAnimation("images/enemy2.png");
   enemyimage = loadAnimation("images/enemy.png");
   fireimage = loadAnimation("images/fire.png");
@@ -94,9 +94,9 @@ function preload() {
   losesound = loadSound("music/lose");
   bombsound = loadSound("music/bomb");
   healthsound = loadSound("music/health");
-  experiencesound = loadSound("music/experience");
+  // experiencesound = loadSound("music/experience");
   selectability = loadSound("music/selectability");
-  sun = loadSound("music/sunorb");
+  // sun = loadSound("music/sunorb");
   waterlevelup = loadSound("music/water");
   firelevelup = loadSound("music/fireballs");
   airlevelup = loadSound("music/air");
@@ -107,8 +107,6 @@ function preload() {
   sunlevelup = loadSound("music/sun");
 }
 // to do:
-// different color card based on powerup
-// tutorial with text content in middle and enemies dont spawn until 10 seconds in
 // portfolio
 // add boss levels
 // add sword damage
@@ -171,8 +169,10 @@ function resetstats() {
   PLAYERMAXHEALTH = 100;
   score = 0;
   experiencepoints = 10;
+  // experiencepoints = 49;
   level = 0;
   time = 1;
+  // time = 25;
   framecounter = 0;
   PLAYERSPEED = 3.75;
   BULLETDAMAGE = 180;
@@ -305,8 +305,8 @@ function timecounter() {
 }
 
 function experiencecollect(player, experience) {
-  experiencesound.play();
-  experiencesound.setVolume(.05);
+  // experiencesound.play();
+  // experiencesound.setVolume(.05);
   experience.remove();
   experiencepoints += 1;
   checklevel();
@@ -377,7 +377,7 @@ function enemykilledupdate(enemy) {
     if (random(1000) > 998) {
       new bombs.Sprite(enemy.x - 10, enemy.y - 10);
     }
-    if (random(1000) > 997) {
+    if (random(1000) > 997.5) {
       new healths.Sprite(enemy.x + 10, enemy.y - 10);
     }
     enemy.remove();
@@ -414,14 +414,33 @@ function generateleveloptions() {
   let options = [option1, option2, option3];
   for (let i = 0; i < 3; i++) {
     let buttonback = createButton(powerups[options[i]][1]);
-    buttonback.style("border-radius", "15px");
-    buttonback.style("background-image", "radial-gradient(#FDFF7A 21%, #FFD87A 80%)");
-    buttonback.style("font-size", "35px");
+    buttonback.style("border-radius", "45px");
+    if (options[i] === 0) {
+      buttonback.style("background-image", "radial-gradient(#FDFF7A 21%, #FF4040 80%)");
+    } else if (options[i] === 1) {
+      buttonback.style("background-image", "radial-gradient(#B0B0B0 21%, #8C5400 80%)");
+    } else if (options[i] === 2) {
+      buttonback.style("background-image", "radial-gradient(#F4FF00 21%, #FF0000 80%)");
+    } else if (options[i] === 3) {
+      buttonback.style("background-image", "radial-gradient(#FFE6E6 21%, #FF1515 80%)");
+    } else if (options[i] === 4) {
+      buttonback.style("background-image", "radial-gradient(#C8C8C8 21%, #333333 80%)");
+    } else if (options[i] === 5) {
+      buttonback.style("background-image", "radial-gradient(#DDFFFD 21%, #54FFF5 90%)");
+    } else if (options[i] === 6) {
+      buttonback.style("background-image", "radial-gradient(#FFD654 21%, #FFF054 80%)");
+    } else if (options[i] === 7) {
+      buttonback.style("background-image", "radial-gradient(#5BB5D6 21%, #548AFF 80%)");
+    }
+    buttonback.style("color", "#373737");
+    buttonback.style("font-size", "28px");
+    buttonback.style("border", "3px solid black");
     buttonback.size(windowWidth / 4, 2 * windowHeight / 3);
     buttonback.position(i * windowWidth / 3 + 1 * windowWidth / 26, 1 * windowHeight / 5);
     let button = createButton(powerups[options[i]][0]);
+    button.style("border-radius", "5px");
     button.style("background-color", "white");
-    button.style("border", "1px, solid");
+    button.style("border", "1px solid");
     button.size(windowWidth / 10, windowHeight / 15);
     button.position(i * windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5 - 20);
     button.attribute = options[i];
@@ -520,8 +539,8 @@ function spawnenemy() {
 
 
 window.mousePressed = () => {
-    sun.play();
-    sun.setVolume(.2);
+    // sun.play();
+    // sun.setVolume(.2);
     let bullet = new bullets.Sprite(player.x, player.y, 15, 15);
     bullet.moveTowards(mouse.x + player.mouse.x, mouse.y + player.mouse.y);
     bullet.speed = 20;
@@ -537,9 +556,7 @@ window.draw = () => {
     backgroundsounds.setVolume(.005);
     losesound.play();
     losesound.setVolume(.3);
-    fill(0, 0, 0, 180);
-    rect(0, 0, windowWidth, windowHeight);
-    let buttonback = createButton("Game over.\nThe shadows have taken over.");
+    let buttonback = createButton("Game over. The shadows have taken over the land and soon the Sun.");
     buttonback.style("border-radius", "15px");
     buttonback.style("background-image", "radial-gradient(red 21%, black 80%)");
     buttonback.style("color", "white");
@@ -555,14 +572,19 @@ window.draw = () => {
     button.position(windowWidth / 3 + 3 * windowWidth / 26, 4 * windowHeight / 5 - 20);
     noLoop();
   }
+  for (let i = 0; i < bullets.length; i ++) {
+    if (bullets[i].x > player.x + 2 * windowWidth / 3 || bullets[i].y > player.y + 2 * windowHeight / 3 || bullets[i].x < player.x - 2 * windowWidth / 3 || bullets[i].y < player.y - 2 * windowHeight / 3) {
+      bullets[i].remove();
+    }
+  }
   framecounter += 1;
   clear();
   image(bg, x1, y1, windowWidth + 8, windowHeight + 8);
   image(bg, x2, y2, windowWidth + 8, windowHeight + 8);
   image(bg, x1, y2, windowWidth + 8, windowHeight + 8);
   image(bg, x2, y1, windowWidth + 8, windowHeight + 8);
-  if (time > 25) {
-    fill(255, 255, 255, 40);
+  if (time > 24) {
+    fill(250, 250, 210, 30);
     rect(0, 0, windowWidth, windowHeight);
   }
   if (x1 < -windowWidth){
@@ -586,7 +608,7 @@ window.draw = () => {
     y2 = -windowHeight;
   }
 
-  if (framecounter % 150 === 0) {
+  if (framecounter % 150 === 0 && time > 24) {
     for (let i = 0; i < time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 5000) {
         spawnenemy();
@@ -622,7 +644,7 @@ window.draw = () => {
   if (kb.pressing("down") && kb.pressing("left")) {
     player.ani = "left";
     facing = "left";
-    player.move(PLAYERSPEED * 1.5, 135, PLAYERSPEED);
+    player.move(PLAYERSPEED * 1.5, 135, PLAYERSPEED - 1);
     y1 -= PLAYERSPEED - 1;
     y2 -= PLAYERSPEED - 1;
     x1 += PLAYERSPEED - 1;
@@ -678,35 +700,42 @@ window.draw = () => {
       player.ani = "standleft";
     }
   }
-  if (time <= 25) {
-    let texttutorial = ["Fight against the shadow warriors who are growing stronger and plotting to attack the Sun.", "Use your sun orbs and abilities to defeat them and protect the Sun.",
-        "Be careful not to get near the shadow warriors.", "Move around and dodge their necrotic attacks.",
-        "As you defeat more shadows, they'll drop sun souls.", "Use these to level up and become stronger.",
-        "Every 5th level, you'll have the option to hone your powers.", "Choose wisely...",
-        "Keep defeating enemies and leveling up to save the Sun from danger. Good luck!"];
-    text(texttutorial[Math.floor(time / 2.75)], windowWidth / 2, 150);
+  if (time <= 24) {
+    let texttutorial = ["Fight against the shadow warriors who are plotting to attack the Sun.", "Use your sun orbs and abilities to defeat them.",
+        "Be careful not to get near the shadows.", "Move around and dodge their necrotic attacks.",
+        "As you defeat more shadows, they'll drop sun souls.", "Use these souls to level up and become stronger.",
+        "As you collect souls, you'll gain powers.",
+        "Help save the Sun from danger. Good luck!"];
+    fill("white");
+    stroke(50);
+    strokeWeight(1.5);
+    textSize(30);
+    textAlign(CENTER);
+    text(texttutorial[Math.floor(time / 3)], windowWidth / 2, 120);
   }
-  textSize(17);
-  textAlign(CENTER);
-  stroke(0);
-  strokeWeight(1);
-  noFill();
-  rect(windowWidth * 3 / 10, windowHeight * 1 / 10, windowWidth * 4 / 10, windowHeight * 1 / 20);
-  noStroke();
-  fill("green");
-  rect(windowWidth * 3 / 10, windowHeight * 1 / 10, map(level- Math.floor(level), 0, 1, 0, windowWidth * 4 / 10), windowHeight * 1 / 20);
-  fill("black");
-  textFont("Courier New");
-  text("Score: " + score, windowWidth - 140, windowHeight * 1 / 20);
-  let minutes = Math.floor(time / 60);
-  let extraSeconds = time % 60;
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  extraSeconds = extraSeconds < 10 ? "0" + extraSeconds : extraSeconds;
-  text("Time: " + minutes + ":" + extraSeconds, 0 + 80, windowHeight * 1 / 20);
-  text("Health: " + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 10 / 13, windowHeight * 2 / 15);
-  textSize(20);
-  textFont("Arial");
-  text("Level: " + Math.floor(level), windowWidth / 2, windowHeight * 1 / 11);
+  if (time > 24) {
+    textSize(17);
+    textAlign(CENTER);
+    stroke(0);
+    strokeWeight(1);
+    noFill();
+    rect(windowWidth * 3 / 10, windowHeight * 1 / 10, windowWidth * 4 / 10, windowHeight * 1 / 20);
+    noStroke();
+    fill("green");
+    rect(windowWidth * 3 / 10, windowHeight * 1 / 10, map(level- Math.floor(level), 0, 1, 0, windowWidth * 4 / 10), windowHeight * 1 / 20);
+    fill("black");
+    textFont("Courier New");
+    text("Score: " + score, windowWidth - 140, windowHeight * 1 / 20);
+    let minutes = Math.floor(time / 60);
+    let extraSeconds = time % 60;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    extraSeconds = extraSeconds < 10 ? "0" + extraSeconds : extraSeconds;
+    text("Time: " + minutes + ":" + extraSeconds, 0 + 80, windowHeight * 1 / 20);
+    text("Health: " + Math.floor(playerhealth) + "/" + PLAYERMAXHEALTH, windowWidth * 10 / 13, windowHeight * 2 / 15);
+    textSize(20);
+    textFont("Arial");
+    text("Level: " + Math.floor(level), windowWidth / 2, windowHeight * 1 / 11);
+  }
   if (rotatorson) {
     for (let i = 1; i < rotators.length + 1; i++) {
       let spacing = (i * 2 * Math.PI / rotators.length);
@@ -732,7 +761,7 @@ window.draw = () => {
     waterfield.x = player.x;
     waterfield.y = player.y;
   }
-  testimage.play();
+  // testimage.play();
   camera.x = player.x;
   camera.y = player.y;
   if (fireballon && framecounter % 180 === 0) {
