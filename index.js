@@ -115,7 +115,7 @@ function preload() {
 // add sword damage
 
 window.setup = () => {
-  waterfield = new Sprite(4 * windowWidth, 4 * windowHeight);
+  waterfield = new Sprite();
   waterfield.visible = false;
   // had to ungroup, hide it, and make a new sprite to make it under the player
   player = new Sprite(windowWidth / 2, windowHeight / 2, 20, 40);
@@ -188,7 +188,7 @@ function resetstats() {
   fireballct = 0;
   RESISTANCE = 1;
   FIREBALLDAMAGE = 220;
-  WATERFIELDDAMAGE = 4;
+  WATERFIELDDAMAGE = 0;
   BOUNCERDAMAGE = 1150;
   ROTATORDAMAGE = 550;
   BOUNCESPEED = 14;
@@ -211,6 +211,7 @@ function physicsinit() {
   // bullets.rotateToDirection = true;
   // player.color = "yellow";
   // bombs.color = "black";
+  player.autoCull = false;
   bombs.diameter = 20;
   // rotators.color = "brown";
   rotators.diameter = 60;
@@ -350,7 +351,7 @@ function fireballdamagetoenemy(weapon, enemy) {
 
 function waterfielddamagetoenemy(weapon, enemy) {
   enemy.life -= WATERFIELDDAMAGE;
-  if (enemy.drag != -2) {
+  if (enemy.drag != -2 && wateron) {
     enemy.drag = -1;
   }
   enemykilledupdate(enemy);
@@ -500,6 +501,7 @@ function generateleveloptions() {
     } else if (button.attribute === 7) {
       if (!wateron) {
         // new waterfield.Sprite();
+        WATERFIELDDAMAGE = 4;
         waterfield.visible = true;
         wateron = true;
       } else {
@@ -586,7 +588,7 @@ window.draw = () => {
   image(bg, x2, y2, windowWidth + 8, windowHeight + 8);
   image(bg, x1, y2, windowWidth + 8, windowHeight + 8);
   image(bg, x2, y1, windowWidth + 8, windowHeight + 8);
-  if (time > 24) {
+  if (time > 20) {
     fill(250, 250, 210, 30);
     rect(0, 0, windowWidth, windowHeight);
   }
@@ -611,7 +613,7 @@ window.draw = () => {
     y2 = -windowHeight;
   }
 
-  if (framecounter % 150 === 0 && time > 24) {
+  if (framecounter % 150 === 0 && time > 20) {
     for (let i = 0; i < time * Math.pow(windowWidth, 2) / 15000000; i++) {
       if (enemies.length < Math.pow(windowWidth, 2) / 12000) {
         spawnenemy();
@@ -721,8 +723,10 @@ window.draw = () => {
     textSize(30);
     textAlign(CENTER);
     text(texttutorial[Math.floor(time / 3)], windowWidth / 2, 120);
+    // player.x = constrain(player.x, 0, windowWidth);
+    // player.y = constrain(player.y, 0, windowHeight);
   }
-  if (time > 24) {
+  if (time > 20) {
     textSize(17);
     textAlign(CENTER);
     stroke(0);
@@ -766,10 +770,8 @@ window.draw = () => {
       ydirection *= -1;
     }
   }
-  if (wateron) {
-    waterfield.x = player.x;
-    waterfield.y = player.y;
-  }
+  waterfield.x = player.x;
+  waterfield.y = player.y;
   camera.x = player.x;
   camera.y = player.y;
   if (fireballon && framecounter % 180 === 0) {
