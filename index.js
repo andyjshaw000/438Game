@@ -69,6 +69,8 @@ let leftattack;
 let losesound;
 let powerups = {0:["Add a Fireball", "Fireballs burn through enemies dealing massive damage!"], 1:["Add a Stonewall", "Indestructible stones surround you, preventing enemies from getting near you. Enemies hit are permanently slowed."], 2:["Increase Speed", "Move faster to dodge and weave past enemies."], 3:["Increase Health", "More health makes you able to take more damage for longer."], 4:["Increase Defense", "Bolster your armor and take less damage from enemies."], 5:["Power up your Airball", "Enemies won't know when it's coming, but when it does, it's too late."], 6:["Increase Sun Orb Damage", "Shadows try to avoid the sun as much as possible, as it does massive damage."], 7:["Power up your Waterfield", "Surround yourself in an endless whirlpool that slows enemies in the tide."]};
 
+p5.disableFriendlyErrors = true;
+
 function preload() {
   standleft = loadAnimation("images/left1.png");
   standright = loadAnimation("images/right1.png");
@@ -372,7 +374,7 @@ function bombdamagetoenemy(weapon, enemy) {
 
 function enemykilledupdate(enemy) {
   if (enemy.life <= 0) {
-    if (random(10) > 5) {
+    if (random(10) > 3) {
       new experience.Sprite(enemy.x, enemy.y);
     }
     if (random(1000) > 998.5) {
@@ -518,7 +520,7 @@ function generateleveloptions() {
 
 function spawnenemy() {
   let enemy = new enemies.Sprite();
-  enemy.life = 100 + Math.pow(time, 1.25);
+  enemy.life = 100 + Math.pow(time, 1.35);
   if (random(2) > 1) {
     if (random(2) > 1) {
       enemy.x = random(0, player.x + windowWidth / 2);
@@ -624,7 +626,7 @@ window.draw = () => {
       }
       // fix so you cant run through
     }
-    enemies[i].moveTo(player.x, player.y, 2.5 + time / 400);
+    enemies[i].moveTo(player.x, player.y, 2.5 + time / 300);
     if (enemies[i].x < player.x) {
       enemies[i].ani = "enemyimage2";
     } else {
@@ -632,11 +634,11 @@ window.draw = () => {
     }
     enemies[i].life += 1;
     if (enemies[i].drag === -1) {
-      enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 400));
+      enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 300));
       enemies[i].drag = 0;
     }
     if (enemies[i].drag === -2) {
-      enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 400));
+      enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 300));
     }
   }
   for (let i = 0; i < experience.length; i++) {
