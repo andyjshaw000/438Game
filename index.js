@@ -175,9 +175,10 @@ function resetstats() {
   // experiencepoints = 29;
   level = 0;
   time = 1;
-  // time = 160;
+  // time = 600;
   framecounter = 0;
   PLAYERSPEED = 3.25;
+  // PLAYERSPEED = 5;
   BULLETDAMAGE = 540;
   rotatorson = false;
   bounceron = false;
@@ -627,9 +628,10 @@ window.draw = () => {
       // }
       // fix so you cant run through
     }
-    enemies[i].moveTo(player.x, player.y, 2.5 + time / 300);
-    // enemies[i].move(player.x, player.y, 2.5 + time / 300);
-    // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
+    // enemies[i].moveTo(player.x, player.y, 2.5 + time / 300);
+    let enemydirection = Math.atan2(player.y - enemies[i].y, player.x - enemies[i].x) * 180 / Math.PI;
+    enemies[i].direction = enemydirection;
+    enemies[i].speed = 2.5 + time / 300;
     if (enemies[i].x < player.x) {
       enemies[i].ani = "enemyimage2";
     } else {
@@ -637,12 +639,13 @@ window.draw = () => {
     }
     enemies[i].life += 1;
     if (enemies[i].drag === -1) {
-      enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 300));
-      // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
+      // enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 300));
+      enemies[i].speed = .25 * (2.5 + time / 300);
       enemies[i].drag = 0;
     }
     if (enemies[i].drag === -2) {
-      enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 300));
+      // enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 300));
+      enemies[i].speed = .75 * (2.5 + time / 300);
       // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
     }
   }
