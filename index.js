@@ -623,9 +623,9 @@ window.draw = () => {
   for (let i = 0; i < enemies.length; i++) {
     if (enemies[i].x > player.x + 2 * windowWidth / 3 || enemies[i].y > player.y + 2 * windowHeight / 3 || enemies[i].x < player.x - 2 * windowWidth / 3 || enemies[i].y < player.y - 2 * windowHeight / 3) {
       enemies[i].remove();
-      if (enemies.length < Math.pow(windowWidth, 2) / 12000) {
-        spawnenemy();
-      }
+      // if (enemies.length < Math.pow(windowWidth, 2) / 12000) {
+      spawnenemy();
+      // }
       // fix so you cant run through
     }
     enemies[i].moveTo(player.x, player.y, 2.5 + time / 300);
@@ -644,9 +644,9 @@ window.draw = () => {
     }
   }
   for (let i = 0; i < experience.length; i++) {
-    if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
-      experience[i].remove();
-    }
+    // if (experience[i].x > player.x + 2 * windowWidth || experience[i].y > player.y + 2 * windowHeight || experience[i].x < player.x - 2 * windowWidth || experience[i].y < player.y - 2 * windowHeight) {
+    //   experience[i].remove();
+    // }
     if (experience[i].life <= 99997300) {
       experience[i].remove();
       experiencepoints += 1;
