@@ -111,10 +111,13 @@ function preload() {
 }
 // to do:
 // add pause
+// enemy damaged sound
 // add boss levels
 // add sword damage
 // add play again
 // clean up code with cull and waterfield.layer
+// balance game
+// cleaner visuals
 
 window.setup = () => {
   waterfield = new Sprite();
