@@ -115,7 +115,7 @@ function preload() {
 // add sword damage
 
 window.setup = () => {
-  waterfield = new Sprite();
+  waterfield = new Sprite(4 * windowWidth, 4 * windowHeight);
   waterfield.visible = false;
   // had to ungroup, hide it, and make a new sprite to make it under the player
   player = new Sprite(windowWidth / 2, windowHeight / 2, 20, 40);
@@ -172,7 +172,7 @@ function resetstats() {
   PLAYERMAXHEALTH = 100;
   score = 0;
   experiencepoints = 10;
-  // experiencepoints = 49;
+  // experiencepoints = 29;
   level = 0;
   time = 1;
   // time = 25;
@@ -503,7 +503,7 @@ function generateleveloptions() {
         waterfield.visible = true;
         wateron = true;
       } else {
-        WATERFIELDDAMAGE += .8;
+        WATERFIELDDAMAGE += .6;
       }
       waterlevelup.play();
       waterlevelup.setVolume(.2);
