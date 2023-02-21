@@ -39,7 +39,7 @@ let backgroundsounds;
 let bombsound;
 let healthsound;
 // let experiencesound;
-// let sun;
+let sun;
 let selectability;
 let sunlevelup;
 let waterlevelup;
@@ -99,7 +99,7 @@ function preload() {
   healthsound = loadSound("music/health");
   // experiencesound = loadSound("music/experience");
   selectability = loadSound("music/selectability");
-  // sun = loadSound("music/sunorb");
+  sun = loadSound("music/sunorb");
   waterlevelup = loadSound("music/water");
   firelevelup = loadSound("music/fireballs");
   airlevelup = loadSound("music/air");
@@ -174,7 +174,7 @@ function resetstats() {
   experiencepoints = 10;
   // experiencepoints = 29;
   level = 0;
-  time = 0;
+  time = 1;
   // time = 160;
   framecounter = 0;
   PLAYERSPEED = 3.25;
@@ -542,10 +542,9 @@ function spawnenemy() {
   }
 }
 
-
 window.mousePressed = () => {
-    // sun.play();
-    // sun.setVolume(.2);
+    sun.play();
+    sun.setVolume(.2);
     let bullet = new bullets.Sprite(player.x, player.y, 15, 15);
     bullet.moveTowards(mouse.x + player.mouse.x, mouse.y + player.mouse.y);
     bullet.speed = 20;
