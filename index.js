@@ -110,9 +110,11 @@ function preload() {
   sunlevelup = loadSound("music/sun");
 }
 // to do:
-// portfolio
+// add pause
 // add boss levels
 // add sword damage
+// add play again
+// clean up code with cull and waterfield.layer
 
 window.setup = () => {
   waterfield = new Sprite();
