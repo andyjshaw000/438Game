@@ -396,7 +396,7 @@ function checklevel() {
     level = Math.pow(experiencepoints, 1 / 1.7);
   }
   if (experiencepoints % 30 === 0 && experiencepoints < 240 || experiencepoints === 250 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512 || experiencepoints === 2729 || experiencepoints === 2953 || experiencepoints === 3185 || experiencepoints === 3424 || experiencepoints === 3670 || experiencepoints === 3923 || experiencepoints === 4183 || experiencepoints === 4450 || experiencepoints === 4724 || experiencepoints === 5004) {
-    draw();
+    redraw();
     selectability.play();
     selectability.setVolume(.1);
     generateleveloptions();
