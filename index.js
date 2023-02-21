@@ -374,7 +374,7 @@ function bombdamagetoenemy(weapon, enemy) {
 
 function enemykilledupdate(enemy) {
   if (enemy.life <= 0) {
-    if (random(10) > 5) {
+    if (random(10) > 3) {
       new experience.Sprite(enemy.x, enemy.y);
     }
     if (random(1000) > 998.5) {
