@@ -110,7 +110,11 @@ function preload() {
   sunlevelup = loadSound("music/sun");
 }
 // to do:
+// save high score, if they have completed tutorial, maybe upgrade drops that can be equipped
 // add pause
+// add magnet
+// add projectile enemies
+// health bar under player in red box
 // enemy damaged sound
 // add boss levels
 // add sword damage
