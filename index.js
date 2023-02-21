@@ -174,7 +174,7 @@ function resetstats() {
   experiencepoints = 10;
   // experiencepoints = 29;
   level = 0;
-  time = 0;
+  time = 1;
   // time = 160;
   framecounter = 0;
   PLAYERSPEED = 3.25;
@@ -541,7 +541,6 @@ function spawnenemy() {
     }
   }
 }
-
 
 window.mousePressed = () => {
     sun.play();
