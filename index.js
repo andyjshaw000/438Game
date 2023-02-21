@@ -188,9 +188,9 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 220;
+  FIREBALLDAMAGE = 320;
   WATERFIELDDAMAGE = 0;
-  BOUNCERDAMAGE = 1150;
+  BOUNCERDAMAGE = 1250;
   ROTATORDAMAGE = 550;
   BOUNCESPEED = 14;
 }
@@ -456,13 +456,13 @@ function generateleveloptions() {
         fireballon = true;
       }
       fireballct += 1;
-      FIREBALLDAMAGE += 25;
+      FIREBALLDAMAGE += 50;
       firelevelup.play();
       firelevelup.setVolume(.3);
     } else if (button.attribute === 1) {
       rotatorson = true;
       new rotators.Sprite();
-      ROTATORDAMAGE += 50;
+      ROTATORDAMAGE += 25;
       earthlevelup.play();
       earthlevelup.setVolume(.08);
     } else if (button.attribute === 2) {
@@ -491,7 +491,7 @@ function generateleveloptions() {
         bounceron = true;
       } else {
         BOUNCESPEED += 1;
-        BOUNCERDAMAGE += 200;
+        BOUNCERDAMAGE += 300;
       }
       airlevelup.play();
       airlevelup.setVolume(.25);
