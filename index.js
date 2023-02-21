@@ -175,7 +175,7 @@ function resetstats() {
   // experiencepoints = 29;
   level = 0;
   time = 1;
-  // time = 25;
+  // time = 160;
   framecounter = 0;
   PLAYERSPEED = 3.25;
   BULLETDAMAGE = 540;
@@ -190,7 +190,7 @@ function resetstats() {
   FIREBALLDAMAGE = 220;
   WATERFIELDDAMAGE = 4;
   BOUNCERDAMAGE = 1150;
-  ROTATORDAMAGE = 570;
+  ROTATORDAMAGE = 550;
   BOUNCESPEED = 14;
 }
 
@@ -392,9 +392,9 @@ function checklevel() {
   if (experiencepoints < 268) {
     level = experiencepoints / 10;
   } else {
-    level = Math.pow(experiencepoints, 1/1.7);
+    level = Math.pow(experiencepoints, 1 / 1.7);
   }
-  if (experiencepoints % 30 === 0 && experiencepoints < 240 || experiencepoints === 250 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512) {
+  if (experiencepoints % 30 === 0 && experiencepoints < 240 || experiencepoints === 250 || experiencepoints === 324 || experiencepoints === 421 || experiencepoints === 529 || experiencepoints === 646 || experiencepoints === 773 || experiencepoints === 909 || experiencepoints === 1054 || experiencepoints === 1207 || experiencepoints === 1370 || experiencepoints === 1540 || experiencepoints === 1719 || experiencepoints === 1905 || experiencepoints === 2100 || experiencepoints === 2303 || experiencepoints === 2512 || experiencepoints === 2729 || experiencepoints === 2953 || experiencepoints === 3185 || experiencepoints === 3424 || experiencepoints === 3670 || experiencepoints === 3923 || experiencepoints === 4183 || experiencepoints === 4450 || experiencepoints === 4724 || experiencepoints === 5004) {
     draw();
     selectability.play();
     selectability.setVolume(.1);
@@ -460,7 +460,7 @@ function generateleveloptions() {
     } else if (button.attribute === 1) {
       rotatorson = true;
       new rotators.Sprite();
-      ROTATORDAMAGE += 100;
+      ROTATORDAMAGE += 50;
       earthlevelup.play();
       earthlevelup.setVolume(.08);
     } else if (button.attribute === 2) {
@@ -612,8 +612,8 @@ window.draw = () => {
   }
 
   if (framecounter % 150 === 0 && time > 24) {
-    for (let i = 0; i < 2.5 * time * (Math.pow(windowWidth, 2) / 1000000) / random(8, 50); i++) {
-      if (enemies.length < Math.pow(windowWidth, 2) / 15000) {
+    for (let i = 0; i < time * Math.pow(windowWidth, 2) / 15000000; i++) {
+      if (enemies.length < Math.pow(windowWidth, 2) / 12000) {
         spawnenemy();
       }
     }
@@ -621,7 +621,7 @@ window.draw = () => {
   for (let i = 0; i < enemies.length; i++) {
     if (enemies[i].x > player.x + 2 * windowWidth / 3 || enemies[i].y > player.y + 2 * windowHeight / 3 || enemies[i].x < player.x - 2 * windowWidth / 3 || enemies[i].y < player.y - 2 * windowHeight / 3) {
       enemies[i].remove();
-      if (enemies.length < Math.pow(windowWidth, 2) / 15000) {
+      if (enemies.length < Math.pow(windowWidth, 2) / 12000) {
         spawnenemy();
       }
       // fix so you cant run through
@@ -792,6 +792,9 @@ window.draw = () => {
   }
   if (time % 180 === 0) {
     enemies.remove();
+    // for (let i = 0; i < enemies.length; i++) {
+    //   enemies[i].remove();
+    // }
     experience.remove();
     bombs.remove();
     healths.remove();
