@@ -178,7 +178,7 @@ function resetstats() {
   // time = 25;
   framecounter = 0;
   PLAYERSPEED = 3.25;
-  BULLETDAMAGE = 340;
+  BULLETDAMAGE = 540;
   rotatorson = false;
   bounceron = false;
   xdirection = 1;
@@ -187,7 +187,7 @@ function resetstats() {
   fireballon = false;
   fireballct = 0;
   RESISTANCE = 1;
-  FIREBALLDAMAGE = 200;
+  FIREBALLDAMAGE = 220;
   WATERFIELDDAMAGE = 4;
   BOUNCERDAMAGE = 1150;
   ROTATORDAMAGE = 570;
