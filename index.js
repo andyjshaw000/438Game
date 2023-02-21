@@ -710,7 +710,7 @@ window.draw = () => {
     }
   }
   if (time <= 24) {
-    let texttutorial = ["Fight against the shadow warriors who are plotting to attack the Sun.", "Shoot sun orbs with LMB and your abilities to defeat them.",
+    let texttutorial = ["Fight against the shadow warriors who are plotting to attack the Sun.", "Shoot sun orbs with LMB and use your abilities to defeat them.",
         "Be careful not to get near the shadows.", "Move around with WASD and dodge their necrotic attacks.",
         "As you defeat more shadows, they'll drop sun souls.", "Use these souls to level up and become stronger.",
         "As you collect souls, you'll gain powers.",
