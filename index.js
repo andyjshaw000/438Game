@@ -174,7 +174,7 @@ function resetstats() {
   experiencepoints = 10;
   // experiencepoints = 29;
   level = 0;
-  time = 1;
+  time = 0;
   // time = 160;
   framecounter = 0;
   PLAYERSPEED = 3.25;
@@ -629,6 +629,8 @@ window.draw = () => {
       // fix so you cant run through
     }
     enemies[i].moveTo(player.x, player.y, 2.5 + time / 300);
+    // enemies[i].move(player.x, player.y, 2.5 + time / 300);
+    // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
     if (enemies[i].x < player.x) {
       enemies[i].ani = "enemyimage2";
     } else {
@@ -637,10 +639,12 @@ window.draw = () => {
     enemies[i].life += 1;
     if (enemies[i].drag === -1) {
       enemies[i].moveTo(player.x, player.y, .25 * (2.5 + time / 300));
+      // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
       enemies[i].drag = 0;
     }
     if (enemies[i].drag === -2) {
       enemies[i].moveTo(player.x, player.y, .75 * (2.5 + time / 300));
+      // enemies[i].move(30, angleTo(player.x, player.y, 0), 2.5 + time / 300);
     }
   }
   for (let i = 0; i < experience.length; i++) {
