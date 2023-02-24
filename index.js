@@ -113,6 +113,7 @@ function preload() {
 // save high score, if they have completed tutorial, maybe upgrade drops that can be equipped
 // add pause
 // add magnet
+// balance defense
 // add projectile enemies
 // health bar under player in red box
 // enemy damaged sound
