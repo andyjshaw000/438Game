@@ -110,9 +110,19 @@ function preload() {
   sunlevelup = loadSound("music/sun");
 }
 // to do:
-// portfolio
+// save high score, if they have completed tutorial, maybe upgrade drops that can be equipped
+// add pause
+// add magnet
+// balance defense
+// add projectile enemies
+// health bar under player in red box
+// enemy damaged sound
 // add boss levels
 // add sword damage
+// add play again
+// clean up code with cull and waterfield.layer
+// balance game
+// cleaner visuals
 
 window.setup = () => {
   waterfield = new Sprite();
